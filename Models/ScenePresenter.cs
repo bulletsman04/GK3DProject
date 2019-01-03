@@ -74,6 +74,9 @@ namespace Models
                 {
                     foreach (Triangle triangle in worldObject.LocalObject.Mesh.Triangles)
                     {
+                        if(triangle==null)
+                            continue;
+
                         Vector<float> p1 = worldObject.LocalObject.Mesh.Vertices[triangle.A];
                         Vector<float> p2 = worldObject.LocalObject.Mesh.Vertices[triangle.B];
                         Vector<float> p3 = worldObject.LocalObject.Mesh.Vertices[triangle.C];

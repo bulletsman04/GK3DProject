@@ -46,6 +46,22 @@ namespace Models
 
             worldObjects.Add(cube1W);
 
+            // sphere1
+
+            LocalObject sphere1 = LocalObjectsCreator.CreateSphere("sphere1");
+
+            Matrix<float> sphere1Model = MathNetHelper.M.DenseOfArray(new float[4, 4]
+            {
+                {1,0,0,0},
+                {0,1, 0, -3f},
+                {0, 0, 1,0},
+                {0, 0, 0, 1}
+            });
+
+            WorldObject sphere1W = new WorldObject(sphere1, sphere1Model);
+
+            worldObjects.Add(sphere1W);
+
 
             return worldObjects;
         }

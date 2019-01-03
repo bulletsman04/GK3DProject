@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public struct Triangle
+    public class Triangle
     {
         public int A;
         public int B;
