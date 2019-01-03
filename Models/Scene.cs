@@ -14,7 +14,7 @@ namespace Models
         public Scene()
         {
             WorldObjects = WorldObjectsCreator.Create();
-            Camera = new Camera(MathNetHelper.V.DenseOfArray(new [] { 0.5f, 0.5f, 0.5f }),
+            Camera = new Camera(MathNetHelper.V.DenseOfArray(new [] { 1.5f, 1f, -0.5f }),
                 MathNetHelper.V.DenseOfArray(new[] { 3f, 0.5f, 0.5f }),
                 MathNetHelper.V.DenseOfArray(new[] { 0, 0, 1f }));
         }

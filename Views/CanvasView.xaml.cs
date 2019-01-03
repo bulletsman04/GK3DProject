@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ViewModels;
 
 namespace Views
 {
@@ -20,9 +21,18 @@ namespace Views
     /// </summary>
     public partial class CanvasView : UserControl
     {
+        private CanvasViewModel _canvasViewModel;
         public CanvasView()
         {
             InitializeComponent();
+            DataContextChanged += this.HandleDataContextChanged;
+
+        }
+
+        private void HandleDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // Store a reference to the ViewModel.
+            _canvasViewModel = base.DataContext as CanvasViewModel;
         }
     }
 }

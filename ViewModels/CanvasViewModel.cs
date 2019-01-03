@@ -24,14 +24,16 @@ namespace ViewModels
         }
 
         private BitmapManager _bitmapManager;
+        private ScenePresenter _scenePresenter;
 
         public PropertyObserver<BitmapManager> BitmapObserver { get; set; }
 
         public CanvasViewModel(BitmapManager bitmapManager)
         {
             _bitmapManager = bitmapManager;
-            //BitmapChangedHandler(_bitmapManager);
             RegisterPropertiesChanged();
+            _scenePresenter = new ScenePresenter(_bitmapManager);
+            _scenePresenter.StartScene();
         }
 
         public void RegisterPropertiesChanged()

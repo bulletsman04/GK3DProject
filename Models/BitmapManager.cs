@@ -17,11 +17,19 @@ namespace Models
             set
             {
                 _mainBitmap = value;
-                RaisePropertyChanged("PixelMap");
+                RaisePropertyChanged("MainBitmap");
             }
         }
 
         public int Width => 1000;
         public int Height => 1000;
+
+
+        public BitmapManager()
+        {
+            MainBitmap = new DirectBitmap(Width,Height);
+        }
+
+        public void RaiseBitmapChanged() => RaisePropertyChanged("MainBitmap");
     }
 }

@@ -25,7 +25,7 @@ namespace Models
                     MathNetHelper.V.DenseOfArray(new float[] {1, 0, 1, 1}),
                     MathNetHelper.V.DenseOfArray(new float[] {1, 1, 1, 1}),
                     MathNetHelper.V.DenseOfArray(new float[] {0, 1, 1, 1}),
-                    MathNetHelper.V.DenseOfArray(new float[] { 0.5f, 0.5f, -0.5f, 1})
+                    MathNetHelper.V.DenseOfArray(new float[] { 0.5f, 0.5f, 0f, 1})
                 },
                 Triangles = new []
                 {
@@ -42,9 +42,9 @@ namespace Models
 
             Matrix<float> cone1Model = MathNetHelper.M.DenseOfArray(new float[4, 4]
             {
-                {1,0,0,0},
-                {0,1, 0, 0},
-                {0, 0, 1, 0},
+                {1,0,0,1f},
+                {0,1, 0, 0.5f},
+                {0, 0, 1, -1f},
                 {0, 0, 0, 1}
             });
 
