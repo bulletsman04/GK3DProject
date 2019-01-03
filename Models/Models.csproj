@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.4.7.0\lib\net461\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="MvvmFoundation.Wpf">
       <HintPath>..\MvvmFoundation.Wpf.dll</HintPath>
     </Reference>
@@ -39,6 +42,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Presentation" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -50,9 +55,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitmapManager.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="DirectBitmap.cs" />
+    <Compile Include="LocalObject.cs" />
+    <Compile Include="MathNetHelper.cs" />
+    <Compile Include="Mesh.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scene.cs" />
+    <Compile Include="ScenePresenter.cs" />
+    <Compile Include="Triangle.cs" />
     <Compile Include="TypesConverters.cs" />
+    <Compile Include="WorldObject.cs" />
+    <Compile Include="WorldObjectsCreator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
