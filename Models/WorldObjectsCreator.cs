@@ -15,36 +15,14 @@ namespace Models
         {
             List<WorldObject> worldObjects = new List<WorldObject>();
 
-            // Cone 1
-            Mesh cone1Mesh = new Mesh()
-            {
-                Name="Cone1",
-                Vertices = new []
-                {
-                    MathNetHelper.V.DenseOfArray(new float[] {0, 0, 1, 1}),
-                    MathNetHelper.V.DenseOfArray(new float[] {1, 0, 1, 1}),
-                    MathNetHelper.V.DenseOfArray(new float[] {1, 1, 1, 1}),
-                    MathNetHelper.V.DenseOfArray(new float[] {0, 1, 1, 1}),
-                    MathNetHelper.V.DenseOfArray(new float[] { 0.5f, 0.5f, 0f, 1})
-                },
-                Triangles = new []
-                {
-                    new Triangle(0,1,2),
-                    new Triangle(0,3,2),
-                    new Triangle(0,1,4),
-                    new Triangle(0,3,4),
-                    new Triangle(4,2,3),
-                    new Triangle(4,2,1)
-                }
-            };
-
-            LocalObject cone1 = new LocalObject(cone1Mesh);
+            // cone1
+            LocalObject cone1 = LocalObjectsCreator.CreateCone("cone1");
 
             Matrix<float> cone1Model = MathNetHelper.M.DenseOfArray(new float[4, 4]
             {
-                {1,0,0,1f},
-                {0,1, 0, 0.5f},
-                {0, 0, 1, -1f},
+                {1,0,0,0},
+                {0,1, 0, 0},
+                {0, 0, 1,2f},
                 {0, 0, 0, 1}
             });
 
@@ -52,8 +30,29 @@ namespace Models
 
             worldObjects.Add(cone1W);
 
+            // cube1
+
+            LocalObject cube1 = LocalObjectsCreator.CreateCube("cube1");
+
+            Matrix<float> cube1Model = MathNetHelper.M.DenseOfArray(new float[4, 4]
+            {
+                {1,0,0,0},
+                {0,1, 0, 0},
+                {0, 0, 1,0},
+                {0, 0, 0, 1}
+            });
+
+            WorldObject cube1W = new WorldObject(cube1, cube1Model);
+
+            worldObjects.Add(cube1W);
+
 
             return worldObjects;
         }
+
+
+
+
+        
     }
 }

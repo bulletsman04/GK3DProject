@@ -97,6 +97,7 @@ namespace Models
                 }
                 
             }
+            _bitmapManager.MainBitmap.Bitmap.RotateFlip(RotateFlipType.Rotate180FlipX);
         }
 
         private Vector<float> vectorShader(Vector<float> point, Matrix<float> modelMatrix)

@@ -58,6 +58,7 @@
     <Compile Include="Camera.cs" />
     <Compile Include="DirectBitmap.cs" />
     <Compile Include="LocalObject.cs" />
+    <Compile Include="LocalObjectsCreator.cs" />
     <Compile Include="MathNetHelper.cs" />
     <Compile Include="Mesh.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
