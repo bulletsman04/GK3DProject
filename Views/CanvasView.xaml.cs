@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GK3DProject
+namespace Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for CanvasView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class CanvasView : UserControl
     {
-        public MainWindow()
+        public CanvasView()
         {
             InitializeComponent();
         }
