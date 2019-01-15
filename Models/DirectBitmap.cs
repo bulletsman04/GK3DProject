@@ -11,13 +11,13 @@ namespace Models
 {
     public class DirectBitmap : IDisposable
     {
-        public Bitmap Bitmap { get; private set; }
-        public Int32[] Bits { get; private set; }
-        public bool Disposed { get; private set; }
-        public int Height { get; private set; }
-        public int Width { get; private set; }
+        public Bitmap Bitmap { get;  set; }
+        public Int32[] Bits { get;  set; }
+        public bool Disposed { get; set; }
+        public int Height { get;  set; }
+        public int Width { get; set; }
 
-        protected GCHandle BitsHandle { get; private set; }
+        protected GCHandle BitsHandle { get;  set; }
 
         public DirectBitmap(int width, int height)
         {

@@ -57,6 +57,9 @@
     <Compile Include="BitmapManager.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="DirectBitmap.cs" />
+    <Compile Include="FillingRectangles\FilledTriangle.cs" />
+    <Compile Include="FillingRectangles\MyGraphics.cs" />
+    <Compile Include="FillingRectangles\Vertex.cs" />
     <Compile Include="LocalObject.cs" />
     <Compile Include="LocalObjectsCreator.cs" />
     <Compile Include="MathNetHelper.cs" />

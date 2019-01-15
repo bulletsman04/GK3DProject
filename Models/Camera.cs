@@ -14,13 +14,18 @@ namespace Models
         public Vector<float> CUp { get; set; }
         // ToDo: Should be there ?
         public Matrix<float> ViewMatrix { get; set; }
-
+        private float _alpha = 0;
         public Camera(Vector<float> cTarget, Vector<float> cPos, Vector<float> cUp)
         {
             CTarget = cTarget;
             CPos = cPos;
             CUp = cUp;
-            CalculateViewMatrix();
+           RotateCamera();
+            //CalculateViewMatrix();
+        }
+
+        public Camera()
+        {
         }
 
         private void CalculateViewMatrix()
@@ -40,6 +45,14 @@ namespace Models
             });
 
             ViewMatrix = ViewMatrix.Inverse();
+        }
+
+
+        public void RotateCamera()
+        {
+            _alpha += (float)(4 * Math.PI / 180);
+            CPos = Vector<float>.Build.DenseOfArray(new float[] { (float)(0 + 8* Math.Cos(_alpha)), (float)(0 + 8 * Math.Sin(_alpha)), 0 });
+            CalculateViewMatrix();
         }
     }
 }
