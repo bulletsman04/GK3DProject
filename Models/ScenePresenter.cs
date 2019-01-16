@@ -6,15 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using Accord.Math;
 using MathNet.Numerics.LinearAlgebra;
 using Models.FillingRectangles;
 using MvvmFoundation.Wpf;
+using Matrix4x4 = System.Numerics.Matrix4x4;
+using Vector3 = System.Numerics.Vector3;
+using Vector4 = System.Numerics.Vector4;
 
 namespace Models
 {
     public class ScenePresenter: ObservableObject
     {
-        public Matrix<float> ProjectionMatrix { get; set; }
+        public Matrix4x4 ProjectionMatrix { get; set; }
         private int _vPWidth;
         private int _vPHeight;
         private BitmapManager _bitmapManager;
@@ -44,7 +48,7 @@ namespace Models
 
         private void SetTimer()
         {
-            _timer = new Timer(50);
+            _timer = new Timer(100);
             _timer.Elapsed += OnTimedEvent;
             _timer.AutoReset = true;
             _timer.Enabled = true;
@@ -60,6 +64,11 @@ namespace Models
                 {
                     _locked = true;
                     _scene.Camera.RotateCamera();
+                    foreach (var sceneWorldObject in _scene.WorldObjects)
+                    {
+                        
+                        sceneWorldObject.Update();
+                    }
                     RepaintScene();
                     _bitmapManager.RaiseBitmapChanged();
                     _locked = false;
@@ -81,12 +90,12 @@ namespace Models
             //}
 
             counter++;
-            
-            MyGraphics myGraphics = new MyGraphics(_bitmapManager.MainBitmap);
 
-            myGraphics.ClearBitmap();
+                MyGraphics myGraphics = new MyGraphics(_bitmapManager.MainBitmap);
 
-            
+                myGraphics.ClearBitmap();
+
+
 
 
                 Pen pen = new Pen(Color.Black);
@@ -97,50 +106,63 @@ namespace Models
                         if (triangle == null)
                             continue;
 
-                        Vector<float> p1 = worldObject.LocalObject.Mesh.Vertices[triangle.A];
-                        Vector<float> p2 = worldObject.LocalObject.Mesh.Vertices[triangle.B];
-                        Vector<float> p3 = worldObject.LocalObject.Mesh.Vertices[triangle.C];
+                        Vector4 p1 = worldObject.LocalObject.Mesh.Vertices[triangle.A];
+                        Vector4 p2 = worldObject.LocalObject.Mesh.Vertices[triangle.B];
+                        Vector4 p3 = worldObject.LocalObject.Mesh.Vertices[triangle.C];
 
-                        Vector<float> vshader1 = vectorShader(p1, worldObject.ModelMatrix);
-                        Vector<float> vshader2 = vectorShader(p2, worldObject.ModelMatrix);
-                        Vector<float> vshader3 = vectorShader(p3, worldObject.ModelMatrix);
+                        Vector4 vshader1 = vectorShader(p1, worldObject.ModelMatrix);
+                        Vector4 vshader2 = vectorShader(p2, worldObject.ModelMatrix);
+                        Vector4 vshader3 = vectorShader(p3, worldObject.ModelMatrix);
 
-                        float p1ex = (float) ((vshader1[0] / vshader1[3] + 1) * _vPWidth / 2);
-                        float p1ey = (float) ((vshader1[1] / vshader1[3] + 1) * _vPHeight / 2);
-                        float p2ex = (float) ((vshader2[0] / vshader2[3] + 1) * _vPWidth / 2);
-                        float p2ey = (float) ((vshader2[1] / vshader2[3] + 1) * _vPHeight / 2);
-                        float p3ex = (float) ((vshader3[0] / vshader3[3] + 1) * _vPWidth / 2);
-                        float p3ey = (float) ((vshader3[1] / vshader3[3] + 1) * _vPHeight / 2);
+                        float p1ex = (vshader1.X / vshader1.W + 1) * _vPWidth / 2;
+                        float p1ey =  ((vshader1.Y / vshader1.W + 1) * _vPHeight / 2);
+                        float p2ex =  ((vshader2.X / vshader2.W + 1) * _vPWidth / 2);
+                        float p2ey = ((vshader2.Y / vshader2.W + 1) * _vPHeight / 2);
+                        float p3ex =  ((vshader3.X / vshader3.W + 1) * _vPWidth / 2);
+                        float p3ey =  ((vshader3.Y / vshader3.W + 1) * _vPHeight / 2);
 
                         FilledTriangle filledtriangle = new FilledTriangle();
-                        filledtriangle.Vertices.Add(new Vertex((int) p1ex, (int) p1ey));
-                        filledtriangle.Vertices.Add(new Vertex((int) p2ex, (int) p2ey));
-                        filledtriangle.Vertices.Add(new Vertex((int) p3ex, (int) p3ey));
-                        filledtriangle.p1 = vshader1;
-                        filledtriangle.p2 = vshader2;
-                        filledtriangle.p3 = vshader3;
+                        filledtriangle.Vertices = new List<Vertex>();
+                        filledtriangle.Vertices.Add(new Vertex((int)p1ex, (int)p1ey));
+                        filledtriangle.Vertices.Add(new Vertex((int)p2ex, (int)p2ey));
+                        filledtriangle.Vertices.Add(new Vertex((int)p3ex, (int)p3ey));
+                        Accord.Math.Vector3 a = new Accord.Math.Vector3(p1ex, p1ey, 1);
+                        Accord.Math.Vector3 b = new Accord.Math.Vector3(p2ex, p2ey, 1);
+                        Accord.Math.Vector3 c = new Accord.Math.Vector3(p3ex, p3ey, 1);
+                        filledtriangle.A = Matrix3x3.CreateFromColumns(a, b, c);
+                        filledtriangle.VA = a;
+                        filledtriangle.VB = b;
+                        filledtriangle.VC = c;
+                        filledtriangle.ZA = vshader1.Z / vshader1.W;
+                        filledtriangle.ZB = vshader2.Z / vshader2.W;
+                        filledtriangle.ZC  = vshader3.Z / vshader3.W;
 
-
-
-                        myGraphics.FillPolygon(filledtriangle, triangle.Color);
+                    myGraphics.FillPolygon(filledtriangle, triangle.Color);
 
                         //g.DrawLine(pen, p1ex, p1ey, p2ex, p2ey);
                         //g.DrawLine(pen, p1ex, p1ey, p3ex, p3ey);
                         //g.DrawLine(pen, p2ex, p2ey, p3ex, p3ey);
-                    }
+                    
                 }
-            
-           // _bitmapManager.MainBitmap = myGraphics._directBitmap;
+            }
+
+            // _bitmapManager.MainBitmap = myGraphics._directBitmap;
 
             //Bitmap b = _bitmapManager.MainBitmap.Bitmap;
             //b.RotateFlip(RotateFlipType.Rotate180FlipX);
             //_bitmapManager.MainBitmap.Bitmap = b;
         }
 
-        private Vector<float> vectorShader(Vector<float> point, Matrix<float> modelMatrix)
+        private Vector4 vectorShader(Vector4 point, Matrix4x4 modelMatrix)
         {
-            Vector<float> result = ProjectionMatrix * _scene.Camera.ViewMatrix * modelMatrix * point;
-            return result;
+            Matrix4x4 result = ProjectionMatrix * _scene.Camera.ViewMatrix * modelMatrix 
+                             * new Matrix4x4(
+                                 point.X,0,0,0,
+                                 point.Y,0,0,0,
+                                 point.Z,0,0,0,
+                                 point.W,0,0,0
+                             );
+            return new Vector4(result.M11,result.M21,result.M31,result.M41);
         }
 
         private void CreateProjectionMatrix()
@@ -151,13 +173,13 @@ namespace Models
             int f = 100;
             float a = _vPHeight / _vPWidth;
 
-            ProjectionMatrix = MathNetHelper.M.DenseOfArray(new float[4, 4]
-            {
-                {e, 0, 0, 0},
-                {0, e/a, 0, 0},
-                {0, 0, -(f+n)/(f-n), -2*f*n/(f-n)},
-                {0, 0, -1, 0}
-            });
+            ProjectionMatrix = new Matrix4x4
+            (
+                e, 0, 0, 0,
+                0, e/a, 0, 0,
+                0, 0, -(f+n)/(f-n), -2*f*n/(f-n),
+                0, 0, -1, 0
+            );
         }
     }
 }

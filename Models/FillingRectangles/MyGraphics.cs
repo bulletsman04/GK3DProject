@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Accord.Math;
 using MathNet.Numerics.LinearAlgebra;
 using Models.FillingRectangles;
+using Vector3 = Accord.Math.Vector3;
 
 namespace Models
 {
     public class MyGraphics
     {
 
-        private double[,] _zBuffer;
+        private float[,] _zBuffer;
         public DirectBitmap _directBitmap;
 
         public MyGraphics(DirectBitmap directBitmap)
@@ -24,38 +27,33 @@ namespace Models
 
         private void InitializeZBuffer(int width, int height)
         {
-            _zBuffer = new double[width, height];
+            _zBuffer = new float[width, height];
 
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    _zBuffer[i, j] = double.PositiveInfinity;
+                    _zBuffer[i, j] = float.PositiveInfinity;
                 }
             }
         }
 
-        private double CountZCoord(float x, float y, FilledTriangle triangle)
+        private float CountZCoord(float x, float y, FilledTriangle triangle)
         {
-            List<Vertex> vertices = triangle.Vertices;
-            Vertex p1 = vertices[0];
-            Vertex p2 = vertices[1];
-            Vertex p3 = vertices[2];
-
-            var A = Matrix<float>.Build.DenseOfArray(new float[,] {
-                { p1.X, p2.X, p3.X },
-                { p1.Y, p2.Y, p3.Y },
-                { 1, 1, 1 }
-            });
-            var b = Vector<float>.Build.Dense(new float[] { x, y, 1 });
-            var X = A.Solve(b);
-
-            float zA = triangle.p1[2] / triangle.p1[3];
-            float zB = triangle.p2[2] / triangle.p2[3];
-            float zC = triangle.p3[2] / triangle.p3[3];
+           
+            var d = new Vector3( x, y, 1 );
 
 
-            float z = X[0] * zA + X[1] * zB + X[2] * zC;
+            var w = triangle.A.Determinant;
+            var wx = Matrix3x3.CreateFromColumns(d, triangle.VB, triangle.VC).Determinant;
+            var wy = Matrix3x3.CreateFromColumns(triangle.VA, d, triangle.VC).Determinant;
+            var wz = Matrix3x3.CreateFromColumns(triangle.VA, triangle.VB, d).Determinant;
+
+            var xA = wx / w;
+            var xB = wy / w;
+            var xC= wz / w;
+
+            float z = xA * triangle.ZA + xB * triangle.ZB + xC * triangle.ZC;
 
             return z;
         }
@@ -119,7 +117,7 @@ namespace Models
                     {
                         if (j < _directBitmap.Width && j >= 0 && (y - 1) < _directBitmap.Height && (y - 1) >= 0)
                         {
-                            double zp = CountZCoord(j, y - 1, triangle);
+                            float zp = CountZCoord(j, y - 1, triangle);
 
                             if (zp < _zBuffer[j, y - 1])
                             {
@@ -128,10 +126,7 @@ namespace Models
 
                                 _zBuffer[j, y - 1] = zp;
                             }
-                            else
-                            {
-                                ;
-                            }
+
                         }
                     }
 

@@ -21,8 +21,8 @@ namespace Models
             }
         }
 
-        public int Width => 700;
-        public int Height => 700;
+        public int Width => 500;
+        public int Height => 500;
 
 
         public BitmapManager()

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models.FillingRectangles
 {
-    public class Vertex
+    public struct Vertex
     {
         public int X { get; set; }
         public int Y { get; set; }

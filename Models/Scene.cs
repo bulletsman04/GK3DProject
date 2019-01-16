@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,9 +15,9 @@ namespace Models
         public Scene()
         {
             WorldObjects = WorldObjectsCreator.Create();
-            Camera = new Camera(MathNetHelper.V.DenseOfArray(new [] { 0f, 0f, 0f }),
-                MathNetHelper.V.DenseOfArray(new[] { 4f,0,0}),
-                MathNetHelper.V.DenseOfArray(new[] { 0, 0, 1f }));
+            Camera = new Camera(new Vector3( 0f, 0f, 0f ),
+                new Vector3(4f, 0f, 0f),
+                new Vector3(0f, 0f, 1f));
         }
     }
 }
