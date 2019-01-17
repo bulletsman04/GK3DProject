@@ -167,7 +167,7 @@ namespace Models
             {
                 for (int j = 0; j < _directBitmap.Height; j++)
                 {
-                     _directBitmap.SetPixel(i,j, Color.White);
+                     _directBitmap.SetPixel(i,j, Color.Black);
                 }
             }
         }

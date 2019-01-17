@@ -11,18 +11,18 @@ namespace Models
 {
     public static class LocalObjectsCreator
     {
-        public static LocalObject CreateCone(string name)
+        public static LocalObject CreateCone(string name,float width2, float height2)
         {
             Mesh coneMesh = new Mesh()
             {
                 Name = name,
                 Vertices = new[]
                 {
-                   new Vector4(-1, -1, -1f, 1),
-                    new Vector4(-1, 1, -1f, 1),
-                    new Vector4(1, -1, -1f, 1),
-                    new Vector4(1, 1, -1f, 1),
-                    new Vector4( 0, 0, 1f, 1)
+                   new Vector4(-width2, -width2, height2, 1),
+                    new Vector4(-width2, width2, height2, 1),
+                    new Vector4(width2, -width2, height2, 1),
+                    new Vector4(width2, width2, height2, 1),
+                    new Vector4( 0, 0, -height2, 1)
                 },
                 Triangles = new[]
                 {
@@ -38,21 +38,21 @@ namespace Models
             return new LocalObject(coneMesh);
         }
 
-        public static LocalObject CreateCube(string name)
+        public static LocalObject CreateCube(string name,float width2)
         {
             Mesh coneMesh = new Mesh()
             {
                 Name = name,
                 Vertices = new[]
                 {
-                    new Vector4(-1, -1, -1f, 1),
-                    new Vector4(1, -1, -1f, 1),
-                    new Vector4(-1, 1f, -1f, 1),
-                    new Vector4(1, 1, -1f, 1),
-                    new Vector4( 1, -1, 1f, 1),
-                    new Vector4(-1, -1, 1f, 1),
-                    new Vector4(-1, 1f, 1f, 1),
-                    new Vector4(1, 1, 1f, 1)
+                    new Vector4(-width2, -width2, width2, 1),
+                    new Vector4(width2, -width2, width2, 1),
+                    new Vector4(-width2, width2, width2, 1),
+                    new Vector4(width2, width2, width2, 1),
+                    new Vector4( width2, -width2, -width2, 1),
+                    new Vector4(-width2, -width2, -width2, 1),
+                    new Vector4(-width2, width2, -width2, 1),
+                    new Vector4(width2, width2, -width2, 1)
                     
                 },
                 Triangles = new[]
@@ -75,12 +75,49 @@ namespace Models
             return new LocalObject(coneMesh);
         }
 
-        public static LocalObject CreateSphere(string name)
+        public static LocalObject CreateCuboid(string name, float width2, float height2, float depth2)
+        {
+            Mesh cuboidMesh = new Mesh()
+            {
+                Name = name,
+                Vertices = new[]
+                {
+                    new Vector4(-height2, -width2, depth2, 1),
+                    new Vector4(height2, -width2, depth2, 1),
+                    new Vector4(-height2, width2, depth2, 1),
+                    new Vector4(height2, width2, depth2, 1),
+                    new Vector4( height2, -width2, -depth2, 1),
+                    new Vector4(-height2, -width2,-depth2, 1),
+                    new Vector4(-height2, width2, -depth2, 1),
+                    new Vector4(height2, width2, -depth2, 1)
+
+                },
+                Triangles = new[]
+                {
+                    new Triangle(0,1,2),
+                    new Triangle(1,3,2),
+                    new Triangle(4,1,3),
+                    new Triangle(7,4,3),
+                    new Triangle(7,3,2),
+                    new Triangle(6,7,2),
+                    new Triangle(6,2,0),
+                    new Triangle(5,6,0),
+                    new Triangle(4,0,1),
+                    new Triangle(5,0,4),
+                    new Triangle(5,4,7),
+                    new Triangle(5,7,6)
+                }
+            };
+
+            return new LocalObject(cuboidMesh);
+        }
+
+        public static LocalObject CreateSphere(string name, float radius)
         {
             int m = 20;
             int n = 25;
             int mn = m * n;
-            float r = 1;
+            float r = radius;
 
             Vector4[] vertices = new Vector4[mn + 2];
             vertices[0] = new Vector4 (0, r, 0, 1 );
@@ -114,7 +151,7 @@ namespace Models
                     }
 
 
-                    vertices[i * n + j] = new Vector4(x, y, z, w);
+                    vertices[i * n + j] = new Vector4(x, y, -z, w);
                 }
             }
 

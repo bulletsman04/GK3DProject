@@ -63,7 +63,7 @@ namespace Models
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     _locked = true;
-                    _scene.Camera.RotateCamera();
+                   // _scene.Camera.RotateCamera();
                     foreach (var sceneWorldObject in _scene.WorldObjects)
                     {
                         

@@ -16,7 +16,7 @@ namespace Models
         {
             WorldObjects = WorldObjectsCreator.Create();
             Camera = new Camera(new Vector3( 0f, 0f, 0f ),
-                new Vector3(4f, 0f, 0f),
+                new Vector3(5f,3f, -4f),
                 new Vector3(0f, 0f, 1f));
         }
     }

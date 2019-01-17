@@ -20,8 +20,8 @@ namespace Models
                 RaisePropertyChanged("MainBitmap");
             }
         }
-
-        public int Width => 500;
+        // ToDo: Error eg while 500 and 475
+        public int Width =500;
         public int Height => 500;
 
 
