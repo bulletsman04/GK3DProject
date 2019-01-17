@@ -15,6 +15,10 @@ namespace Models.FillingRectangles
         public Vector4 p1 { get; set; }
         public Vector4 p2 { get; set; }
         public Vector4 p3 { get; set; }
+        public Vector4 n1 { get; set; }
+        public Vector4 n2 { get; set; }
+        public Vector4 n3 { get; set; }
+
         public Matrix3x3 A { get; set; }
         public float ZA { get; set; }
         public float ZB { get; set; }

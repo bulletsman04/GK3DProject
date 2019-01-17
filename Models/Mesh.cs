@@ -12,7 +12,7 @@ namespace Models
     public class Mesh
     {
         public string Name { get; set; }
-        public Vector4[] Vertices { get; set; }
+        public NVertex[] Vertices { get; set; }
         public Triangle[] Triangles { get; set; }
     }
 }

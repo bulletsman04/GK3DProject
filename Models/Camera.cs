@@ -52,7 +52,7 @@ namespace Models
         public void RotateCamera()
         {
             _alpha += (float)(2 * Math.PI / 180);
-            CPos = new Vector3((float)(0 + 5* Math.Cos(_alpha)), (float)(0 + 5 * Math.Sin(_alpha)),-3f);
+            CPos = new Vector3((float)(0 + 5* Math.Cos(_alpha)), (float)(0 + 5 * Math.Sin(_alpha)),0);
             CalculateViewMatrix();
         }
     }

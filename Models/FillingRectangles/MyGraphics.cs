@@ -10,6 +10,7 @@ using Accord.Math;
 using MathNet.Numerics.LinearAlgebra;
 using Models.FillingRectangles;
 using Vector3 = Accord.Math.Vector3;
+using Vector4 = System.Numerics.Vector4;
 
 namespace Models
 {
@@ -38,11 +39,39 @@ namespace Models
             }
         }
 
-        private float CountZCoord(float x, float y, FilledTriangle triangle)
+        private float CountZCoord(Vector3 barycentricCoords, FilledTriangle triangle)
         {
-           
-            var d = new Vector3( x, y, 1 );
+          
 
+            float z = barycentricCoords.X * triangle.ZA + barycentricCoords.Y * triangle.ZB + barycentricCoords.Z * triangle.ZC;
+
+            return z;
+        }
+
+        private Vector4 CalculateNormal(Vector3 barycentricCoords, FilledTriangle triangle)
+        {
+
+            Vector4 normal = new Vector4();
+            normal.X = barycentricCoords.X * triangle.n1.X+ barycentricCoords.Y * triangle.n2.X + barycentricCoords.Z * triangle.n3.X;
+            normal.Y = barycentricCoords.X * triangle.n1.Y + barycentricCoords.Y * triangle.n2.Y + barycentricCoords.Z * triangle.n3.Y;
+            normal.Z = barycentricCoords.X * triangle.n1.Z + barycentricCoords.Y * triangle.n2.Z + barycentricCoords.Z * triangle.n3.Z;
+            return normal;
+        }
+
+        private Vector4 CalculatePoint(Vector3 barycentricCoords, FilledTriangle triangle)
+        {
+
+            Vector4 point = new Vector4();
+            point.X = barycentricCoords.X * triangle.p1.X + barycentricCoords.Y * triangle.p1.X + barycentricCoords.Z * triangle.p3.X;
+            point.Y = barycentricCoords.X * triangle.p1.Y + barycentricCoords.Y * triangle.p2.Y + barycentricCoords.Z * triangle.p3.Y;
+            point.Z = barycentricCoords.X * triangle.p1.Z + barycentricCoords.Y * triangle.p3.Z + barycentricCoords.Z * triangle.p3.Z;
+            return point;
+        }
+
+        private Vector3 CalculateBarycentric(int x, int y, FilledTriangle triangle)
+        {
+
+            var d = new Vector3(x, y, 1);
 
             var w = triangle.A.Determinant;
             var wx = Matrix3x3.CreateFromColumns(d, triangle.VB, triangle.VC).Determinant;
@@ -51,11 +80,9 @@ namespace Models
 
             var xA = wx / w;
             var xB = wy / w;
-            var xC= wz / w;
+            var xC = wz / w;
 
-            float z = xA * triangle.ZA + xB * triangle.ZB + xC * triangle.ZC;
-
-            return z;
+            return  new Vector3(xA,xB,xC);
         }
 
         // ToDo: Zmienić na strukturę
@@ -75,7 +102,7 @@ namespace Models
                 X = x;
             }
         }
-        public void FillPolygon(FilledTriangle triangle, Color color)
+        public void FillPolygon(FilledTriangle triangle, Color color, Camera camera)
         {
 
             List<Vertex> vertices = triangle.Vertices;
@@ -117,11 +144,19 @@ namespace Models
                     {
                         if (j < _directBitmap.Width && j >= 0 && (y - 1) < _directBitmap.Height && (y - 1) >= 0)
                         {
-                            float zp = CountZCoord(j, y - 1, triangle);
+                            Vector3 barycentricCoords = CalculateBarycentric(j, y - 1, triangle);
+                            Vector4 normal = CalculateNormal(barycentricCoords, triangle);
+                            Vector4 point = CalculatePoint(barycentricCoords, triangle);
+                            Color finalColor = Shaders.FragmentShader(camera,point, normal, new Vector4(0, 1, 0, 0),
+                                new List<Vector4>
+                                {
+                                    new Vector4(0, -3f, 0, 0)
+                                });
+                            float zp = CountZCoord(barycentricCoords, triangle);
 
                             if (zp < _zBuffer[j, y - 1])
                             {
-                                _directBitmap.SetPixel(j, y - 1, color);
+                                _directBitmap.SetPixel(j, y - 1, finalColor);
                                 counter++;
 
                                 _zBuffer[j, y - 1] = zp;

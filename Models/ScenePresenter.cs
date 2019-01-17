@@ -63,7 +63,7 @@ namespace Models
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     _locked = true;
-                   // _scene.Camera.RotateCamera();
+                    _scene.Camera.RotateCamera();
                     foreach (var sceneWorldObject in _scene.WorldObjects)
                     {
                         
@@ -106,9 +106,9 @@ namespace Models
                         if (triangle == null)
                             continue;
 
-                        Vector4 p1 = worldObject.LocalObject.Mesh.Vertices[triangle.A];
-                        Vector4 p2 = worldObject.LocalObject.Mesh.Vertices[triangle.B];
-                        Vector4 p3 = worldObject.LocalObject.Mesh.Vertices[triangle.C];
+                        Vector4 p1 = worldObject.LocalObject.Mesh.Vertices[triangle.A].Point;
+                        Vector4 p2 = worldObject.LocalObject.Mesh.Vertices[triangle.B].Point;
+                        Vector4 p3 = worldObject.LocalObject.Mesh.Vertices[triangle.C].Point;
 
                         Vector4 vshader1 = vectorShader(p1, worldObject.ModelMatrix);
                         Vector4 vshader2 = vectorShader(p2, worldObject.ModelMatrix);
@@ -136,8 +136,16 @@ namespace Models
                         filledtriangle.ZA = vshader1.Z / vshader1.W;
                         filledtriangle.ZB = vshader2.Z / vshader2.W;
                         filledtriangle.ZC  = vshader3.Z / vshader3.W;
+                        filledtriangle.n1 = worldObject.LocalObject.Mesh.Vertices[triangle.A].Normal;
+                        filledtriangle.n2 = worldObject.LocalObject.Mesh.Vertices[triangle.B].Normal;
+                        filledtriangle.n3 = worldObject.LocalObject.Mesh.Vertices[triangle.C].Normal;
+                        filledtriangle.p1 = p1;
+                        filledtriangle.p2 = p2;
+                        filledtriangle.p3 = p3;
 
-                    myGraphics.FillPolygon(filledtriangle, triangle.Color);
+
+
+                    myGraphics.FillPolygon(filledtriangle, triangle.Color,_scene.Camera);
 
                         //g.DrawLine(pen, p1ex, p1ey, p2ex, p2ey);
                         //g.DrawLine(pen, p1ex, p1ey, p3ex, p3ey);
