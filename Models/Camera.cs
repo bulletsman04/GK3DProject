@@ -51,8 +51,8 @@ namespace Models
 
         public void RotateCamera()
         {
-            _alpha += (float)(1 * Math.PI / 180);
-            CPos = new Vector3((float)(0 + 8* Math.Cos(_alpha)), (float)(0 + 8 * Math.Sin(_alpha)),-5f);
+            _alpha += (float)(2 * Math.PI / 180);
+            CPos = new Vector3((float)(0 + 5* Math.Cos(_alpha)), (float)(0 + 5 * Math.Sin(_alpha)),-3f);
             CalculateViewMatrix();
         }
     }

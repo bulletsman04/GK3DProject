@@ -116,7 +116,7 @@ namespace Models
         {
             // base
             float baseWidth = 0.6f;
-            float zOffset = -0.6f;
+            float zOffset = -(0.3f + 0.3f);
             LocalObject baseTurret = LocalObjectsCreator.CreateCuboid("baseTurret", baseWidth,baseWidth,0.3f);
 
 
@@ -142,7 +142,7 @@ namespace Models
 
             // turret
             float turretWidth = 0.3f;
-            float zTurretOffset = -1.1f;
+            float zTurretOffset = -(0.3f + 0.3f + 0.3f + 0.5f );
             LocalObject turret = LocalObjectsCreator.CreateCuboid("turret", turretWidth, turretWidth, 0.5f);
 
 
@@ -168,7 +168,7 @@ namespace Models
             //bullet
             float radius = 0.1f;
             LocalObject bullet = LocalObjectsCreator.CreateSphere("bullet", radius);
-            float zBulletOffset = -(0.3f + 0.6f + 0.25f + radius);
+            float zBulletOffset = -(0.3f + 0.3f + 0.3f + 0.5f + radius);
 
             Matrix4x4 bulletModel = new Matrix4x4(
                 1, 0, 0, 0f,
