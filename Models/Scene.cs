@@ -17,7 +17,8 @@ namespace Models
         {
             WorldObjects = WorldObjectsCreator.Create();
             Camera = new Camera(new Vector3( 0f, 0f, 0f ),
-                new Vector3(0f,3f, 0f),
+                //ToDo: problem with 0,0,-10
+                new Vector3(3f,0f, -3f),
                 new Vector3(0f, 0f, 1f));
             LightCources = new List<Vector4>();
             LightCources.Add(new Vector4(0,0,4f,0));

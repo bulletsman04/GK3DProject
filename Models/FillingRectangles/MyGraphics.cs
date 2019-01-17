@@ -150,7 +150,7 @@ namespace Models
                             Color finalColor = Shaders.FragmentShader(camera,point, normal, new Vector4(0, 1, 0, 0),
                                 new List<Vector4>
                                 {
-                                    new Vector4(0, -3f, 0, 0)
+                                    new Vector4(0f, 0f, -3f, 0)
                                 });
                             float zp = CountZCoord(barycentricCoords, triangle);
 

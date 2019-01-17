@@ -63,7 +63,7 @@ namespace Models
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     _locked = true;
-                    _scene.Camera.RotateCamera();
+                   // _scene.Camera.RotateCamera();
                     foreach (var sceneWorldObject in _scene.WorldObjects)
                     {
                         
@@ -105,14 +105,15 @@ namespace Models
                     {
                         if (triangle == null)
                             continue;
+                        FilledTriangle filledtriangle = new FilledTriangle();
 
                         Vector4 p1 = worldObject.LocalObject.Mesh.Vertices[triangle.A].Point;
                         Vector4 p2 = worldObject.LocalObject.Mesh.Vertices[triangle.B].Point;
                         Vector4 p3 = worldObject.LocalObject.Mesh.Vertices[triangle.C].Point;
 
-                        Vector4 vshader1 = vectorShader(p1, worldObject.ModelMatrix);
-                        Vector4 vshader2 = vectorShader(p2, worldObject.ModelMatrix);
-                        Vector4 vshader3 = vectorShader(p3, worldObject.ModelMatrix);
+                        Vector4 vshader1 = vectorShader(p1, worldObject.LocalObject.Mesh.Vertices[triangle.A].Normal, worldObject.ModelMatrix, out Vector4 p1M, out  Vector4 n1M);
+                        Vector4 vshader2 = vectorShader(p2, worldObject.LocalObject.Mesh.Vertices[triangle.B].Normal, worldObject.ModelMatrix, out Vector4 p2M, out Vector4 n2M);
+                        Vector4 vshader3 = vectorShader(p3, worldObject.LocalObject.Mesh.Vertices[triangle.C].Normal, worldObject.ModelMatrix, out Vector4 p3M, out Vector4 n3M);
 
                         float p1ex = (vshader1.X / vshader1.W + 1) * _vPWidth / 2;
                         float p1ey =  ((vshader1.Y / vshader1.W + 1) * _vPHeight / 2);
@@ -121,7 +122,7 @@ namespace Models
                         float p3ex =  ((vshader3.X / vshader3.W + 1) * _vPWidth / 2);
                         float p3ey =  ((vshader3.Y / vshader3.W + 1) * _vPHeight / 2);
 
-                        FilledTriangle filledtriangle = new FilledTriangle();
+                        
                         filledtriangle.Vertices = new List<Vertex>();
                         filledtriangle.Vertices.Add(new Vertex((int)p1ex, (int)p1ey));
                         filledtriangle.Vertices.Add(new Vertex((int)p2ex, (int)p2ey));
@@ -136,12 +137,12 @@ namespace Models
                         filledtriangle.ZA = vshader1.Z / vshader1.W;
                         filledtriangle.ZB = vshader2.Z / vshader2.W;
                         filledtriangle.ZC  = vshader3.Z / vshader3.W;
-                        filledtriangle.n1 = worldObject.LocalObject.Mesh.Vertices[triangle.A].Normal;
-                        filledtriangle.n2 = worldObject.LocalObject.Mesh.Vertices[triangle.B].Normal;
-                        filledtriangle.n3 = worldObject.LocalObject.Mesh.Vertices[triangle.C].Normal;
-                        filledtriangle.p1 = p1;
-                        filledtriangle.p2 = p2;
-                        filledtriangle.p3 = p3;
+                        filledtriangle.n1 = n1M;
+                        filledtriangle.n2 = n2M;
+                        filledtriangle.n3 = n3M;
+                        filledtriangle.p1 = p1M;
+                        filledtriangle.p2 = p2M;
+                        filledtriangle.p3 = p3M;
 
 
 
@@ -161,16 +162,17 @@ namespace Models
             //_bitmapManager.MainBitmap.Bitmap = b;
         }
 
-        private Vector4 vectorShader(Vector4 point, Matrix4x4 modelMatrix)
+        private Vector4 vectorShader(Vector4 point, Vector4 normal, Matrix4x4 modelMatrix, out Vector4 pM, out Vector4 nM)
         {
-            Matrix4x4 result = ProjectionMatrix * _scene.Camera.ViewMatrix * modelMatrix 
-                             * new Matrix4x4(
-                                 point.X,0,0,0,
-                                 point.Y,0,0,0,
-                                 point.Z,0,0,0,
-                                 point.W,0,0,0
-                             );
-            return new Vector4(result.M11,result.M21,result.M31,result.M41);
+
+            Matrix4x4 modelVertex = modelMatrix.Multiply(point);
+
+            Matrix4x4 result = ProjectionMatrix * _scene.Camera.ViewMatrix * modelVertex;
+
+            pM = MathNetHelper.Matrix4X4ToVector4(modelVertex);
+            nM = MathNetHelper.Matrix4X4ToVector4(modelMatrix.Multiply(normal));
+
+            return MathNetHelper.Matrix4X4ToVector4(result);
         }
 
         private void CreateProjectionMatrix()
