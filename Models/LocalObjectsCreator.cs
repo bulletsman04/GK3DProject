@@ -38,86 +38,154 @@ namespace Models
         //    return new LocalObject(coneMesh);
         //}
 
-        //public static LocalObject CreateCube(string name, float width2)
-        //{
-        //    Mesh coneMesh = new Mesh()
-        //    {
-        //        Name = name,
-        //        Vertices = new[]
-        //        {
-        //           new NVertex(  new Vector4(-width2, -width2, width2, 1),new Vector4(0,0,1,0) ),
-        //            new NVertex(  new Vector4(-width2, -width2, width2, 1),new Vector4(-1,0,0,0) ),
-        //            new NVertex(  new Vector4(-width2, -width2, width2, 1),new Vector4(0,-1,0,0) ),
-        //            new Vector4(width2, -width2, width2, 1),
-        //            new Vector4(-width2, width2, width2, 1),
-        //            new Vector4(width2, width2, width2, 1),
-        //            new Vector4( width2, -width2, -width2, 1),
-        //            new Vector4(-width2, -width2, -width2, 1),
-        //            new Vector4(-width2, width2, -width2, 1),
-        //            new Vector4(width2, width2, -width2, 1)
+        public static LocalObject CreateCube(string name, float width2)
+        {
+            Mesh coneMesh = new Mesh()
+            {
+                Name = name,
+                Vertices = new[]
+                {
+                    // 1
+                   new NVertex(  new Vector4(-width2, -width2, width2, 1),new Vector4(0,0,1,0) ),
+                    new NVertex(  new Vector4(-width2, -width2, width2, 1),new Vector4(-1,0,0,0) ),
+                    new NVertex(  new Vector4(-width2, -width2, width2, 1),new Vector4(0,-1,0,0) ),
+                    // 2
+                    new NVertex(  new Vector4(width2, -width2, width2, 1),new Vector4(0,0,1,0) ),
+                    new NVertex(  new Vector4(width2, -width2, width2, 1),new Vector4(1,0,0,0) ),
+                    new NVertex(  new Vector4(width2, -width2, width2, 1),new Vector4(0,-1,0,0) ),
 
-        //        },
-        //        Triangles = new[]
-        //        {
-        //            new Triangle(0,1,2),
-        //            new Triangle(1,3,2),
-        //            new Triangle(4,1,3),
-        //            new Triangle(7,4,3),
-        //            new Triangle(7,3,2),
-        //            new Triangle(6,7,2),
-        //            new Triangle(6,2,0),
-        //            new Triangle(5,6,0),
-        //            new Triangle(4,0,1),
-        //            new Triangle(5,0,4),
-        //            new Triangle(5,4,7),
-        //            new Triangle(5,7,6)
-        //        }
-        //    };
+                    // 3
+                    new NVertex(  new Vector4(-width2, width2, width2, 1),new Vector4(0,0,1,0) ),
+                    new NVertex(  new Vector4(-width2, width2, width2, 1),new Vector4(-1,0,0,0) ),
+                    new NVertex(  new Vector4(-width2, width2, width2, 1),new Vector4(0,1,0,0) ),
+                    
+                    // 4
+                    new NVertex(  new Vector4(width2, width2, width2, 1),new Vector4(0,0,1,0) ),
+                    new NVertex(  new Vector4(width2, width2, width2, 1),new Vector4(1,0,0,0) ),
+                    new NVertex(  new Vector4(width2, width2, width2, 1),new Vector4(0,1,0,0) ),
 
-        //    return new LocalObject(coneMesh);
-        //}
+                    // 5
+                    new NVertex(  new Vector4(-width2, -width2, -width2, 1),new Vector4(0,0,-1,0) ),
+                    new NVertex(  new Vector4(-width2, -width2, -width2, 1),new Vector4(-1,0,0,0) ),
+                    new NVertex(  new Vector4(-width2, -width2, -width2, 1),new Vector4(0,-1,0,0) ),
 
-        //public static LocalObject CreateCuboid(string name, float width2, float height2, float depth2)
-        //{
-        //    Mesh cuboidMesh = new Mesh()
-        //    {
-        //        Name = name,
-        //        Vertices = new[]
-        //        {
-        //            new Vector4(-height2, -width2, depth2, 1),
-        //            new Vector4(height2, -width2, depth2, 1),
-        //            new Vector4(-height2, width2, depth2, 1),
-        //            new Vector4(height2, width2, depth2, 1),
-        //            new Vector4( height2, -width2, -depth2, 1),
-        //            new Vector4(-height2, -width2,-depth2, 1),
-        //            new Vector4(-height2, width2, -depth2, 1),
-        //            new Vector4(height2, width2, -depth2, 1)
+                    // 6
+                    new NVertex(  new Vector4(width2, -width2, -width2, 1),new Vector4(0,0,-1,0) ),
+                    new NVertex(  new Vector4(width2, -width2, -width2, 1),new Vector4(1,0,0,0) ),
+                    new NVertex(  new Vector4(width2, -width2, -width2, 1),new Vector4(0,-1,0,0) ),
 
-        //        },
-        //        Triangles = new[]
-        //        {
-        //            new Triangle(0,1,2),
-        //            new Triangle(1,3,2),
-        //            new Triangle(4,1,3),
-        //            new Triangle(7,4,3),
-        //            new Triangle(7,3,2),
-        //            new Triangle(6,7,2),
-        //            new Triangle(6,2,0),
-        //            new Triangle(5,6,0),
-        //            new Triangle(4,0,1),
-        //            new Triangle(5,0,4),
-        //            new Triangle(5,4,7),
-        //            new Triangle(5,7,6)
-        //        }
-        //    };
+                    // 7
+                    new NVertex(  new Vector4(-width2, width2, -width2, 1),new Vector4(0,0,-1,0) ),
+                    new NVertex(  new Vector4(-width2, width2, -width2, 1),new Vector4(-1,0,0,0) ),
+                    new NVertex(  new Vector4(-width2, width2, -width2, 1),new Vector4(0,1,0,0) ),
 
-        //    return new LocalObject(cuboidMesh);
-        //}
+                    // 8
+                    new NVertex(  new Vector4(width2, width2, -width2, 1),new Vector4(0,0,-1,0) ),
+                    new NVertex(  new Vector4(width2, width2, -width2, 1),new Vector4(1,0,0,0) ),
+                    new NVertex(  new Vector4(width2, width2, -width2, 1),new Vector4(0,1,0,0) )
+
+                },
+                Triangles = new[]
+                {
+                    new Triangle(0,3,6),
+                    new Triangle(3,9,6),
+
+                    new Triangle(2,17,5),
+                    new Triangle(14,17,2),
+
+                    new Triangle(16,4,10),
+                    new Triangle(10,22,16),
+
+                    new Triangle(20,23,11),
+                    new Triangle(11,8,20),
+
+                    new Triangle(13,19,7),
+                    new Triangle(7,1,13),
+                    new Triangle(21,18,12),
+                    new Triangle(12,15,21)
+                    
+                }
+            };
+
+            return new LocalObject(coneMesh);
+        }
+
+        public static LocalObject CreateCuboid(string name, float width2, float height2, float depth2)
+        {
+            Mesh cuboidMesh = new Mesh()
+            {
+                Name = name,
+               Vertices = new[]
+                {
+                    // 1
+                   new NVertex(  new Vector4(-height2, -width2, depth2, 1),new Vector4(0,0,1,0) ),
+                    new NVertex(  new Vector4(-height2, -width2, depth2, 1),new Vector4(-1,0,0,0) ),
+                    new NVertex(  new Vector4(-height2, -width2, depth2, 1),new Vector4(0,-1,0,0) ),
+                    // 2
+                    new NVertex(  new Vector4(height2, -width2, depth2, 1),new Vector4(0,0,1,0) ),
+                    new NVertex(  new Vector4(height2, -width2, depth2, 1),new Vector4(1,0,0,0) ),
+                    new NVertex(  new Vector4(height2, -width2, depth2, 1),new Vector4(0,-1,0,0) ),
+
+                    // 3
+                    new NVertex(  new Vector4(-height2, width2, depth2, 1),new Vector4(0,0,1,0) ),
+                    new NVertex(  new Vector4(-height2, width2, depth2, 1),new Vector4(-1,0,0,0) ),
+                    new NVertex(  new Vector4(-height2, width2, depth2, 1),new Vector4(0,1,0,0) ),
+                    
+                    // 4
+                    new NVertex(  new Vector4(height2, width2, depth2, 1),new Vector4(0,0,1,0) ),
+                    new NVertex(  new Vector4(height2, width2, depth2, 1),new Vector4(1,0,0,0) ),
+                    new NVertex(  new Vector4(height2, width2, depth2, 1),new Vector4(0,1,0,0) ),
+
+                    // 5
+                    new NVertex(  new Vector4(-height2, -width2, -depth2, 1),new Vector4(0,0,-1,0) ),
+                    new NVertex(  new Vector4(-height2, -width2, -depth2, 1),new Vector4(-1,0,0,0) ),
+                    new NVertex(  new Vector4(-height2, -width2, -depth2, 1),new Vector4(0,-1,0,0) ),
+
+                    // 6
+                    new NVertex(  new Vector4(height2, -width2, -depth2, 1),new Vector4(0,0,-1,0) ),
+                    new NVertex(  new Vector4(height2, -width2, -depth2, 1),new Vector4(1,0,0,0) ),
+                    new NVertex(  new Vector4(height2, -width2, -depth2, 1),new Vector4(0,-1,0,0) ),
+
+                    // 7
+                    new NVertex(  new Vector4(-height2, width2, -depth2, 1),new Vector4(0,0,-1,0) ),
+                    new NVertex(  new Vector4(-height2, width2, -depth2, 1),new Vector4(-1,0,0,0) ),
+                    new NVertex(  new Vector4(-height2, width2, -depth2, 1),new Vector4(0,1,0,0) ),
+
+                    // 8
+                    new NVertex(  new Vector4(height2, width2, -depth2, 1),new Vector4(0,0,-1,0) ),
+                    new NVertex(  new Vector4(height2, width2, -depth2, 1),new Vector4(1,0,0,0) ),
+                    new NVertex(  new Vector4(height2, width2, -depth2, 1),new Vector4(0,1,0,0) )
+
+                },
+                Triangles = new[]
+                {
+                    new Triangle(0,3,6),
+                    new Triangle(3,9,6),
+
+                    new Triangle(2,17,5),
+                    new Triangle(14,17,2),
+
+                    new Triangle(16,4,10),
+                    new Triangle(10,22,16),
+
+                    new Triangle(20,23,11),
+                    new Triangle(11,8,20),
+
+                    new Triangle(13,19,7),
+                    new Triangle(7,1,13),
+
+                    new Triangle(21,15,12),
+                    new Triangle(12,18,21)
+                }
+            };
+
+            return new LocalObject(cuboidMesh);
+        }
 
         public static LocalObject CreateSphere(string name, float radius)
         {
-            int m = 15;
-            int n = 20;
+            int m = 30;
+            int n = 30;
             int mn = m * n;
             float r = radius;
 
@@ -131,11 +199,7 @@ namespace Models
             {
                 for (int j = 1; j <= n; j++)
                 {
-                    //float x = (float) (r * Math.Cos(DegreesToRadians((float) (2 * Math.PI * (j - 1) / n)))*Math.Sin(DegreesToRadians((float) Math.PI * i / (m+1))));
-                    //float y = (float)(r*Math.Cos(DegreesToRadians((float)Math.PI * j / (m + 1))));
-                    //float z = (float)(r * Math.Sin(DegreesToRadians((float)(2 * Math.PI * (j - 1) / n))) * Math.Sin(DegreesToRadians((float)Math.PI * i / (m + 1))));
-                    //float w = 1f;
-
+                   
                     float x = (float)(r * Math.Cos((float)(2 * Math.PI * (j - 1) / n)) * Math.Sin((float)Math.PI * (i + 1) / (m + 1)));
                     // i not j
                     float y = (float)(r * Math.Cos((float)Math.PI * (i + 1) / (m + 1)));

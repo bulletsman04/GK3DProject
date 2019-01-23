@@ -55,7 +55,7 @@ namespace Models
             normal.X = barycentricCoords.X * triangle.n1.X+ barycentricCoords.Y * triangle.n2.X + barycentricCoords.Z * triangle.n3.X;
             normal.Y = barycentricCoords.X * triangle.n1.Y + barycentricCoords.Y * triangle.n2.Y + barycentricCoords.Z * triangle.n3.Y;
             normal.Z = barycentricCoords.X * triangle.n1.Z + barycentricCoords.Y * triangle.n2.Z + barycentricCoords.Z * triangle.n3.Z;
-            return normal;
+            return Vector4.Normalize(normal);
         }
 
         private Vector4 CalculatePoint(Vector3 barycentricCoords, FilledTriangle triangle)
@@ -145,17 +145,19 @@ namespace Models
                         if (j < _directBitmap.Width && j >= 0 && (y - 1) < _directBitmap.Height && (y - 1) >= 0)
                         {
                             Vector3 barycentricCoords = CalculateBarycentric(j, y - 1, triangle);
-                            Vector4 normal = CalculateNormal(barycentricCoords, triangle);
-                            Vector4 point = CalculatePoint(barycentricCoords, triangle);
-                            Color finalColor = Shaders.FragmentShader(camera,point, normal, new Vector4(0, 1, 0, 0),
-                                new List<Vector4>
-                                {
-                                    new Vector4(0f, 0f, -3f, 0)
-                                });
+                        
                             float zp = CountZCoord(barycentricCoords, triangle);
 
                             if (zp < _zBuffer[j, y - 1])
                             {
+                                Vector4 normal = CalculateNormal(barycentricCoords, triangle);
+                                Vector4 point = CalculatePoint(barycentricCoords, triangle);
+                                Color finalColor = Shaders.FragmentShader(camera, point, normal, new Vector4(0, 1, 0, 0),
+                                    new List<Vector4>
+                                    {
+                                        new Vector4(0f, 0f, -4f, 0)
+                                    });
+
                                 _directBitmap.SetPixel(j, y - 1, finalColor);
                                 counter++;
 

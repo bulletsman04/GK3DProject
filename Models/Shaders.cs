@@ -19,21 +19,21 @@ namespace Models
             {
                 nLight = Vector4.Normalize(new Vector4(light.X - point.X, light.Y - point.Y, (light.Z - point.Z), 0));
                 //nLight = Vector4.Normalize(light);
-                normal = Vector4.Normalize(normal);
+                //normal = Vector4.Normalize(normal);
                 float cosVR = 0;
 
 
                 Vector4 V = Vector4.Normalize(new Vector4(camera.CPos.X - point.X, camera.CPos.Y-point.Y, (camera.CPos.Z - point.Z), 0));
                 //Vector4 V = Vector4.Normalize(new Vector4(0, 0, -1, 0));
 
-                Vector4 RV = Vector4.Normalize(2 * (normal.X*light.X + normal.Y*light.Y + normal.Z*light.Z) * normal - nLight);
+                Vector4 RV = Vector4.Normalize(2 * (normal.X* nLight.X + normal.Y* nLight.Y + normal.Z* nLight.Z) * normal - nLight);
 
-                cosVR = (float)Math.Pow(Math.Max(V.X * RV.X + V.Y * RV.Y + V.Z * RV.Z,0), 50);
+                cosVR = (float)Math.Pow(Math.Max(V.X * RV.X + V.Y * RV.Y + V.Z * RV.Z,0), 40);
 
                 float cosLN = Math.Max(normal.X * nLight.X + normal.Y * nLight.Y + normal.Z * nLight.Z,0);
-                float R = ligthColor.X * (1 * IO.X * cosLN + 1* cosVR);
-                float G = ligthColor.Y * (1 * IO.Y * cosLN + 1* cosVR);
-                float B = ligthColor.Z * (1 * IO.Z * cosLN + 1 * cosVR);
+                float R = ligthColor.X * (1 * IO.X * cosLN + 0.5f* cosVR);
+                float G = ligthColor.Y * (1 * IO.Y * cosLN + 0.5f* cosVR);
+                float B = ligthColor.Z * (1 * IO.Z * cosLN + 0.5f * cosVR);
 
               result += new Vector4(R,G,B,0);
                 

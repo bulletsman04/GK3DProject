@@ -13,104 +13,104 @@ namespace Models
 {
     public static class WorldObjectsCreator
     {
-        //private static void CreateSceneBase(List<WorldObject> worldObjects)
-        //{
-        //    LocalObject cuboid1 = LocalObjectsCreator.CreateCuboid("cuboid1", 4, 3, 0.3f);
+        private static void CreateSceneBase(List<WorldObject> worldObjects)
+        {
+            LocalObject cuboid1 = LocalObjectsCreator.CreateCuboid("cuboid1", 4, 3, 0.3f);
 
 
-        //    Matrix4x4 cuboid1Model = new Matrix4x4(
-        //        1, 0, 0, 0,
-        //        0, 1, 0, 0f,
-        //        0, 0, 1, 0,
-        //        0, 0, 0, 1
-        //    );
+            Matrix4x4 cuboid1Model = new Matrix4x4(
+                1, 0, 0, 0,
+                0, 1, 0, 0f,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            );
 
-        //    WorldObject cuboid1W = new WorldObject(cuboid1, cuboid1Model);
+            WorldObject cuboid1W = new WorldObject(cuboid1, cuboid1Model);
 
-        //    foreach (var meshTriangle in cuboid1W.LocalObject.Mesh.Triangles)
-        //    {
+            foreach (var meshTriangle in cuboid1W.LocalObject.Mesh.Triangles)
+            {
 
-        //        meshTriangle.Color = Color.DarkRed;
+                meshTriangle.Color = Color.DarkRed;
 
-        //    }
+            }
 
-        //    worldObjects.Add(cuboid1W);
-        //}
-        //private static void CreateBases(List<WorldObject> worldObjects)
-        //{
-        //    // cube1
-        //    float basesWidth = 0.4f;
-        //    float zOffset = -0.7f;
-        //    LocalObject cube1 = LocalObjectsCreator.CreateCube("cube1",basesWidth);
-
-
-        //    Matrix4x4 cube1Model = new Matrix4x4(
-        //        1, 0, 0, 1.5f,
-        //        0, 1, 0, -2f,
-        //        0, 0, 1, zOffset,
-        //        0, 0, 0, 1
-        //    );
-
-        //    WorldObject cube1W = new WorldObject(cube1, cube1Model);
-
-        //    //cube1W.UpdateRotation = () => cube1W.Rotation = new Vector3(cube1W.Rotation.X, cube1W.Rotation.Y,
-        //    //    (float) (cube1W.Rotation.Z + 2 * Math.PI / 180));
-
-        //    foreach (var meshTriangle in cube1W.LocalObject.Mesh.Triangles)
-        //    {
-
-        //        meshTriangle.Color = Color.Green;
-
-        //    }
-
-        //    worldObjects.Add(cube1W);
+            worldObjects.Add(cuboid1W);
+        }
+        private static void CreateBases(List<WorldObject> worldObjects)
+        {
+            // cube1
+            float basesWidth = 0.4f;
+            float zOffset = -0.7f;
+            LocalObject cube1 = LocalObjectsCreator.CreateCube("cube1", basesWidth);
 
 
-        //    // cube2
-        //    LocalObject cube2 = LocalObjectsCreator.CreateCube("cube2", basesWidth);
+            Matrix4x4 cube1Model = new Matrix4x4(
+                1, 0, 0, 1.5f,
+                0, 1, 0, -2f,
+                0, 0, 1, zOffset,
+                0, 0, 0, 1
+            );
+
+            WorldObject cube1W = new WorldObject(cube1, cube1Model);
+
+            //cube1W.UpdateRotation = () => cube1W.Rotation = new Vector3(cube1W.Rotation.X, cube1W.Rotation.Y,
+            //    (float) (cube1W.Rotation.Z + 2 * Math.PI / 180));
+
+            foreach (var meshTriangle in cube1W.LocalObject.Mesh.Triangles)
+            {
+
+                meshTriangle.Color = Color.Green;
+
+            }
+
+            worldObjects.Add(cube1W);
 
 
-        //    Matrix4x4 cube2Model = new Matrix4x4(
-        //        1, 0, 0, 0f,
-        //        0, 1, 0, -2f,
-        //        0, 0, 1, zOffset,
-        //        0, 0, 0, 1
-        //    );
-
-        //    WorldObject cube2W = new WorldObject(cube2, cube2Model);
-
-        //    foreach (var meshTriangle in cube2W.LocalObject.Mesh.Triangles)
-        //    {
-
-        //        meshTriangle.Color = Color.Gold;
-
-        //    }
-
-        //    worldObjects.Add(cube2W);
+            // cube2
+            LocalObject cube2 = LocalObjectsCreator.CreateCube("cube2", basesWidth);
 
 
-        //    // cube3
-        //    LocalObject cube3 = LocalObjectsCreator.CreateCube("cube3", basesWidth);
+            Matrix4x4 cube2Model = new Matrix4x4(
+                1, 0, 0, 0f,
+                0, 1, 0, -2f,
+                0, 0, 1, zOffset,
+                0, 0, 0, 1
+            );
+
+            WorldObject cube2W = new WorldObject(cube2, cube2Model);
+
+            foreach (var meshTriangle in cube2W.LocalObject.Mesh.Triangles)
+            {
+
+                meshTriangle.Color = Color.Gold;
+
+            }
+
+            worldObjects.Add(cube2W);
 
 
-        //    Matrix4x4 cube3Model = new Matrix4x4(
-        //        1, 0, 0, -1.5f,
-        //        0, 1, 0, -2f,
-        //        0, 0, 1, zOffset,
-        //        0, 0, 0, 1
-        //    );
+            // cube3
+            LocalObject cube3 = LocalObjectsCreator.CreateCube("cube3", basesWidth);
 
-        //    WorldObject cube3W = new WorldObject(cube3, cube3Model);
 
-        //    foreach (var meshTriangle in cube3W.LocalObject.Mesh.Triangles)
-        //    {
+            Matrix4x4 cube3Model = new Matrix4x4(
+                1, 0, 0, -1.5f,
+                0, 1, 0, -2f,
+                0, 0, 1, zOffset,
+                0, 0, 0, 1
+            );
 
-        //        meshTriangle.Color = Color.White;
+            WorldObject cube3W = new WorldObject(cube3, cube3Model);
 
-        //    }
+            foreach (var meshTriangle in cube3W.LocalObject.Mesh.Triangles)
+            {
 
-        //    worldObjects.Add(cube3W);
-        //}
+                meshTriangle.Color = Color.White;
+
+            }
+
+            worldObjects.Add(cube3W);
+        }
 
         //private static void CreateTurret(List<WorldObject> worldObjects)
         //{
@@ -129,7 +129,7 @@ namespace Models
 
         //    WorldObject baseTurretW = new WorldObject(baseTurret, baseTurretModel);
 
-           
+
         //    foreach (var meshTriangle in baseTurretW.LocalObject.Mesh.Triangles)
         //    {
 
@@ -209,19 +209,19 @@ namespace Models
             LocalObject sphere1 = LocalObjectsCreator.CreateSphere("sphere1",radius);
             float zOffset = -(0.3f + 0.8f + 0.3f);
 
-            //Matrix4x4 sphere1Model = new Matrix4x4(
-            //    1, 0, 0, 0f,
-            //    0, 1, 0, -2f,
-            //    0, 0, 1, zOffset,
-            //    0, 0, 0, 1
-            //);
-
             Matrix4x4 sphere1Model = new Matrix4x4(
                 1, 0, 0, 0f,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
+                0, 1, 0, -2f,
+                0, 0, 1, zOffset,
                 0, 0, 0, 1
             );
+
+            //Matrix4x4 sphere1Model = new Matrix4x4(
+            //    1, 0, 0, 0f,
+            //    0, 1, 0, 0,
+            //    0, 0, 1, 0,
+            //    0, 0, 0, 1
+            //);
 
             WorldObject sphere1W = new WorldObject(sphere1, sphere1Model);
 
@@ -258,8 +258,8 @@ namespace Models
         public static List<WorldObject> Create()
         {
             List<WorldObject> worldObjects = new List<WorldObject>();
-            //CreateSceneBase(worldObjects);
-            //CreateBases(worldObjects);
+            CreateSceneBase(worldObjects);
+            CreateBases(worldObjects);
             //CreateTurret(worldObjects);
             CreateShootObjects(worldObjects);
 
