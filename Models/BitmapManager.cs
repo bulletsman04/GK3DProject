@@ -21,8 +21,8 @@ namespace Models
             }
         }
         // ToDo: Error eg while 500 and 475
-        public int Width =1500;
-        public int Height =>1500;
+        public int Width =500;
+        public int Height =>500;
 
 
         public BitmapManager()

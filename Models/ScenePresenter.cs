@@ -25,12 +25,14 @@ namespace Models
         private Scene _scene;
         private Timer _timer;
         private bool _locked = false;
+        private MyGraphics _myGraphics;
 
         public ScenePresenter(BitmapManager bitmapManager)
         {
             _vPHeight = bitmapManager.Height;
             _vPWidth = bitmapManager.Width;
             _bitmapManager = bitmapManager;
+            _myGraphics = new MyGraphics(_bitmapManager.MainBitmap);
             CreateProjectionMatrix();
             _scene = new Scene();
             StartScene();
@@ -39,12 +41,6 @@ namespace Models
         public void StartScene()
         {
             SetTimer();
-            //RepaintScene();
-            //_bitmapManager.RaiseBitmapChanged();
-            ////_scene.WorldObjects.Clear();
-            //_scene.Camera.RotateCamera();
-            //RepaintScene();
-            //_bitmapManager.RaiseBitmapChanged();
         }
 
         private void SetTimer()
@@ -74,39 +70,21 @@ namespace Models
                 });
             }
         }
-
-        private int counter = 0;
-
+        
         private void RepaintScene()
         {
-            // WTF?
-            //using (Graphics g = Graphics.FromImage(_bitmapManager.MainBitmap.Bitmap))
-            //{
-            //    g.Clear(Color.White);
-            //}
+            _myGraphics.ClearBitmap();
+            _myGraphics.InitializeZBuffer();
 
-            counter++;
-
-            MyGraphics myGraphics = new MyGraphics(_bitmapManager.MainBitmap);
-
-            myGraphics.ClearBitmap();
-
-
-            Pen pen = new Pen(Color.Black);
             foreach (WorldObject worldObject in _scene.WorldObjects)
             {
                 foreach (Triangle triangle in worldObject.LocalObject.Mesh.Triangles)
                 {
-                    if (triangle == null)
-                        continue;
 
                     Vector4 p1 = worldObject.LocalObject.Mesh.Vertices[triangle.A].Point;
                     Vector4 p2 = worldObject.LocalObject.Mesh.Vertices[triangle.B].Point;
                     Vector4 p3 = worldObject.LocalObject.Mesh.Vertices[triangle.C].Point;
                     
-                    FilledTriangle filledtriangle = new FilledTriangle();
-
-
                     Vector4 vshader1 = vectorShader(p1, worldObject.LocalObject.Mesh.Vertices[triangle.A].Normal,
                         worldObject.ModelMatrix, out Vector4 p1M, out Vector4 n1M);
                     Vector4 vshader2 = vectorShader(p2, worldObject.LocalObject.Mesh.Vertices[triangle.B].Normal,
@@ -133,7 +111,10 @@ namespace Models
                     var v3y = vshader3.Y / vshader3.W;
                     var v3z = vshader3.Z / vshader3.W;
 
+                    if (!isInCube(v1x, v1y, v1z) || !isInCube(v2x, v2y, v2z) || !isInCube(v3x, v3y, v3z))
+                        continue;
 
+                    
                     float p1ex = (v1x + 1) * _vPWidth / 2;
                     float p1ey = ((v1y + 1) * _vPHeight / 2);
                     float p2ex = ((v2x + 1) * _vPWidth / 2);
@@ -141,9 +122,7 @@ namespace Models
                     float p3ex = ((v3x + 1) * _vPWidth / 2);
                     float p3ey = ((v3y + 1) * _vPHeight / 2);
 
-
-                    if (!isInCube(v1x, v1y, v1z) || !isInCube(v2x, v2y, v2z) || !isInCube(v3x, v3y, v3z))
-                        continue;
+                    FilledTriangle filledtriangle = new FilledTriangle();
 
                     filledtriangle.Vertices = new List<Vertex>();
                     filledtriangle.Vertices.Add(new Vertex((int) p1ex, (int) p1ey));
@@ -167,18 +146,10 @@ namespace Models
                     filledtriangle.p3 = p3M;
 
 
-                    myGraphics.FillPolygon(filledtriangle, triangle.Color, _scene.Camera);
-
-                    //g.DrawLine(pen, p1ex, p1ey, p2ex, p2ey);
-                    //g.DrawLine(pen, p1ex, p1ey, p3ex, p3ey);
-                    //g.DrawLine(pen, p2ex, p2ey, p3ex, p3ey);
+                    _myGraphics.FillPolygon(filledtriangle, triangle.Color, _scene.Camera);
+                    
                 }
-
-                
             }
-
-       
-
           
         }
 

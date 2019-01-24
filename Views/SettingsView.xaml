@@ -6,7 +6,106 @@
              xmlns:local="clr-namespace:Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
-    </Grid>
+    <UserControl.Resources>
+
+        <Style TargetType="Border" x:Key="BorderStyle">
+            <Setter Property="BorderThickness" Value="0 0 0 1"></Setter>
+            <Setter Property="BorderBrush" Value="Black"></Setter>
+            <Setter Property="Margin" Value="15 5 0 0"></Setter>
+        </Style>
+
+        <Style TargetType="StackPanel" x:Key="StackStyle">
+            <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+            <Setter Property="Height" Value="Auto"></Setter>
+            <Setter Property="Margin" Value="0 5 0 5"></Setter>
+        </Style>
+        <Style TargetType="WrapPanel" x:Key="WrapStyle">
+            <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+            <Setter Property="Height" Value="Auto"></Setter>
+            <Setter Property="Margin" Value="0 3 0 3"></Setter>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="TextStyle">
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10 0 0 0"></Setter>
+            <Setter Property="Padding" Value="3"></Setter>
+        </Style>
+
+        <Style TargetType="RadioButton">
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        </Style>
+        <Style TargetType="Image">
+            <Setter Property="Width" Value="40"></Setter>
+            <Setter Property="Height" Value="30"></Setter>
+            <Setter Property="Stretch" Value="Fill"></Setter>
+            <Setter Property="Margin" Value="12 0 0 0"></Setter>
+        </Style>
+
+    </UserControl.Resources>
+    <Border BorderThickness="1 0 0 0 " BorderBrush="Black">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+
+            <Border Style="{StaticResource BorderStyle}" Grid.Row="0">
+                <StackPanel Style="{StaticResource StackStyle}" >
+                    <TextBlock Style="{StaticResource TextStyle}">Cieniowanie</TextBlock>
+                    <WrapPanel Style="{StaticResource WrapStyle}">
+                        <RadioButton IsChecked="{Binding Settings.IsPhong}" GroupName="Phong">Phong</RadioButton>
+                    </WrapPanel>
+                    <WrapPanel Style="{StaticResource WrapStyle}">
+                        <RadioButton IsChecked="{Binding Settings.IsGouraud}" GroupName="Phong">Gouraud</RadioButton>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+
+            <Border Style="{StaticResource BorderStyle}" Grid.Row="1">
+                <StackPanel Style="{StaticResource StackStyle}" >
+                    <TextBlock Style="{StaticResource TextStyle}">Kamera</TextBlock>
+                    <WrapPanel Style="{StaticResource WrapStyle}">
+                        <RadioButton IsChecked="{Binding Settings.IsStatic}" GroupName="Camera">Statyczna</RadioButton>
+                    </WrapPanel>
+                    <WrapPanel Style="{StaticResource WrapStyle}">
+                        <RadioButton  IsChecked="{Binding Settings.IsObserving}" GroupName="Camera">Obserwująca</RadioButton>
+                    </WrapPanel>
+                    <WrapPanel Style="{StaticResource WrapStyle}">
+                        <RadioButton IsChecked="{Binding Settings.IsMoving}" GroupName="Camera">Podążająca</RadioButton>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource BorderStyle}"  Grid.Row="2">
+                <StackPanel Style="{StaticResource StackStyle}" >
+                    <TextBlock Style="{StaticResource TextStyle}">Wpływ czynników</TextBlock>
+                    <WrapPanel Style="{StaticResource WrapStyle}">
+                        <TextBlock Margin="3 0 0 0" > Model rozproszony:</TextBlock>
+                        <TextBlock Margin="10 0 0 0" FontSize="10"> 0</TextBlock>
+                        <Slider Minimum="0" Maximum="1" TickFrequency="0.01" Value="{Binding Settings.LambertRate}" Width="80"></Slider>
+                        <TextBlock Margin="5 0 0 0 " FontSize="10" > 1</TextBlock>
+                    </WrapPanel>
+                    <WrapPanel Style="{StaticResource WrapStyle}">
+                        <TextBlock Margin="3 0 0 0" > Model zwierciadlany:</TextBlock>
+                        <TextBlock Margin="10 0 0 0" FontSize="10"> 0</TextBlock>
+                        <Slider Minimum="0" Maximum="1" TickFrequency="0.01" Value="{Binding Settings.PhongRate}" Width="80"></Slider>
+                        <TextBlock Margin="5 0 0 0 " FontSize="10" > 1</TextBlock>
+                    </WrapPanel>
+                    <WrapPanel Style="{StaticResource WrapStyle}">
+                        <TextBlock Margin="3 0 0 0" > m =</TextBlock>
+                        <TextBlock Margin="10 0 0 0" FontSize="10"> 10</TextBlock>
+                        <Slider Minimum="10" Maximum="100" TickFrequency="1" Value="{Binding Settings.MPhong}" Width="80"></Slider>
+                        <TextBlock  FontSize="10" > 100</TextBlock>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+    </Border>
 </UserControl>

@@ -23,16 +23,14 @@ namespace Models
         public MyGraphics(DirectBitmap directBitmap)
         {
             _directBitmap = directBitmap;
-            InitializeZBuffer(directBitmap.Width, directBitmap.Height);
+            _zBuffer = new float[directBitmap.Width, directBitmap.Height];
         }
 
-        private void InitializeZBuffer(int width, int height)
+        public void InitializeZBuffer()
         {
-            _zBuffer = new float[width, height];
-
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < _directBitmap.Width; i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < _directBitmap.Height; j++)
                 {
                     _zBuffer[i, j] = float.PositiveInfinity;
                 }
@@ -105,13 +103,13 @@ namespace Models
         public void FillPolygon(FilledTriangle triangle, Color color, Camera camera)
         {
 
+            
             List<Vertex> vertices = triangle.Vertices;
             int[] ind = Enumerable.Range(0, triangle.Vertices.Count).OrderBy(x => triangle.Vertices[x].Y).ToArray();
             int ymin = vertices[ind[0]].Y;
             int ymax = vertices[ind[vertices.Count - 1]].Y;
             int k = 0;
             List<Node> AET = new List<Node>();
-            int counter = 0;
             for (int y = ymin; y <= ymax; y++)
             {
                 while (vertices[ind[k]].Y == y - 1)
@@ -159,7 +157,6 @@ namespace Models
                                     });
 
                                 _directBitmap.SetPixel(j, y - 1, finalColor);
-                                counter++;
 
                                 _zBuffer[j, y - 1] = zp;
                             }

@@ -13,14 +13,15 @@ namespace ViewModels
         public CanvasViewModel CanvasViewModel { get; set; }
         public SettingsViewModel SettingsViewModel { get; set; }
         public BitmapManager BitmapManager { get; set; }
+        public Settings Settings { get; set; }
 
         public MainViewModel()
         {
             BitmapManager = new BitmapManager();
-
+            Settings = new Settings();
             MenuViewModel = new MenuViewModel();
             CanvasViewModel = new CanvasViewModel(BitmapManager);
-            SettingsViewModel = new SettingsViewModel();
+            SettingsViewModel = new SettingsViewModel(Settings);
         }
     }
 }
