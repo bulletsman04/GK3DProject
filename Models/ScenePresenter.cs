@@ -49,7 +49,7 @@ namespace Models
 
         private void SetTimer()
         {
-            _timer = new Timer(100);
+            _timer = new Timer(50);
             _timer.Elapsed += OnTimedEvent;
             _timer.AutoReset = true;
             _timer.Enabled = true;

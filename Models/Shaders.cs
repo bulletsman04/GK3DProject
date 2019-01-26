@@ -49,9 +49,9 @@ namespace Models
                 }
 
                 float cosLN = Math.Max(normal.X * nLight.X + normal.Y * nLight.Y + normal.Z * nLight.Z, 0);
-                float R = ligthColor.X * (1 * IO.X * cosLN + 0.5f * cosVR);
-                float G = ligthColor.Y * (1 * IO.Y * cosLN + 0.5f * cosVR);
-                float B = ligthColor.Z * (1 * IO.Z * cosLN + 0.5f * cosVR);
+                float R = ligthColor.X * (Settings.LambertRate * IO.X * cosLN + Settings.PhongRate * cosVR);
+                float G = ligthColor.Y * (Settings.LambertRate * IO.Y * cosLN + Settings.PhongRate * cosVR);
+                float B = ligthColor.Z * (Settings.LambertRate * IO.Z * cosLN + Settings.PhongRate * cosVR);
 
                 result += new Vector4(R, G, B, 0);
 
