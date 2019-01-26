@@ -27,6 +27,8 @@ namespace Models
         private bool _locked = false;
         private MyGraphics _myGraphics;
 
+        public Settings Settings { get; set; }
+
         public ScenePresenter(BitmapManager bitmapManager, Settings settings)
         {
             _vPHeight = bitmapManager.Height;
@@ -35,6 +37,7 @@ namespace Models
             _myGraphics = new MyGraphics(_bitmapManager.MainBitmap);
             CreateProjectionMatrix();
             _scene = new Scene();
+            Settings = settings;
             Shaders.Settings = settings;
             StartScene();
         }
@@ -126,9 +129,9 @@ namespace Models
                     FilledTriangle filledtriangle = new FilledTriangle();
 
                     filledtriangle.Vertices = new List<Vertex>();
-                    filledtriangle.Vertices.Add(new Vertex((int) p1ex, (int) p1ey));
-                    filledtriangle.Vertices.Add(new Vertex((int) p2ex, (int) p2ey));
-                    filledtriangle.Vertices.Add(new Vertex((int) p3ex, (int) p3ey));
+                    filledtriangle.Vertices.Add(new Vertex((int) p1ex, (int) p1ey, new Vector4(0, 1, 0, 0)));
+                    filledtriangle.Vertices.Add(new Vertex((int) p2ex, (int) p2ey, new Vector4(0, 1, 0, 0)));
+                    filledtriangle.Vertices.Add(new Vertex((int) p3ex, (int) p3ey, new Vector4(0, 1, 0, 0)));
                     Accord.Math.Vector3 a = new Accord.Math.Vector3(p1ex, p1ey, 1);
                     Accord.Math.Vector3 b = new Accord.Math.Vector3(p2ex, p2ey, 1);
                     Accord.Math.Vector3 c = new Accord.Math.Vector3(p3ex, p3ey, 1);
@@ -145,6 +148,20 @@ namespace Models
                     filledtriangle.p1 = p1M;
                     filledtriangle.p2 = p2M;
                     filledtriangle.p3 = p3M;
+
+                    if (Settings.IsGouraud)
+                    {
+                        List<Vector4> lights = new List<Vector4>
+                        {
+                            new Vector4(0f, 0f, -4f, 0)
+                        };
+                        filledtriangle.Vertices[0] = new Vertex(filledtriangle.Vertices[0].X, filledtriangle.Vertices[0].Y,
+                            Shaders.CalculatePhong(_scene.Camera, p1M, n1M, new Vector4(0,1,0,0), lights));
+                        filledtriangle.Vertices[1] = new Vertex(filledtriangle.Vertices[1].X, filledtriangle.Vertices[1].Y,
+                            Shaders.CalculatePhong(_scene.Camera, p1M, n1M, new Vector4(0, 1, 0, 0), lights));
+                        filledtriangle.Vertices[2] = new Vertex(filledtriangle.Vertices[2].X, filledtriangle.Vertices[2].Y,
+                            Shaders.CalculatePhong(_scene.Camera, p1M, n1M, new Vector4(0, 1, 0, 0), lights));
+                    }
 
 
                     _myGraphics.FillPolygon(filledtriangle, triangle.Color, _scene.Camera);

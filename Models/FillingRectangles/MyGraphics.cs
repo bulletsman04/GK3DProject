@@ -60,9 +60,19 @@ namespace Models
         {
 
             Vector4 point = new Vector4();
-            point.X = barycentricCoords.X * triangle.p1.X + barycentricCoords.Y * triangle.p1.X + barycentricCoords.Z * triangle.p3.X;
+            point.X = barycentricCoords.X * triangle.p1.X + barycentricCoords.Y * triangle.p2.X + barycentricCoords.Z * triangle.p3.X;
             point.Y = barycentricCoords.X * triangle.p1.Y + barycentricCoords.Y * triangle.p2.Y + barycentricCoords.Z * triangle.p3.Y;
-            point.Z = barycentricCoords.X * triangle.p1.Z + barycentricCoords.Y * triangle.p3.Z + barycentricCoords.Z * triangle.p3.Z;
+            point.Z = barycentricCoords.X * triangle.p1.Z + barycentricCoords.Y * triangle.p2.Z + barycentricCoords.Z * triangle.p3.Z;
+            return point;
+        }
+
+        private Vector4 CalculateColor(Vector3 barycentricCoords, FilledTriangle triangle)
+        {
+
+            Vector4 point = new Vector4();
+            point.X = barycentricCoords.X * triangle.Vertices[0].Color.X + barycentricCoords.Y * triangle.Vertices[1].Color.X + barycentricCoords.Z * triangle.Vertices[2].Color.X;
+            point.Y = barycentricCoords.X * triangle.Vertices[0].Color.Y + barycentricCoords.Y * triangle.Vertices[1].Color.Y + barycentricCoords.Z * triangle.Vertices[2].Color.Y;
+            point.Z = barycentricCoords.X * triangle.Vertices[0].Color.Z + barycentricCoords.Y * triangle.Vertices[1].Color.Z + barycentricCoords.Z * triangle.Vertices[2].Color.Z;
             return point;
         }
 
@@ -148,9 +158,22 @@ namespace Models
 
                             if (zp < _zBuffer[j, y - 1])
                             {
-                                Vector4 normal = CalculateNormal(barycentricCoords, triangle);
-                                Vector4 point = CalculatePoint(barycentricCoords, triangle);
-                                Color finalColor = Shaders.FragmentShader(camera, point, normal, new Vector4(0, 1, 0, 0),
+                                Vector4 normal = Vector4.Zero;
+                                Vector4 point = Vector4.Zero;;
+                                if (Shaders.Settings.IsPhong == true)
+                                {
+                                    normal = CalculateNormal(barycentricCoords, triangle);
+                                    point = CalculatePoint(barycentricCoords, triangle);
+                                }
+
+                                Vector4 IO = triangle.Vertices[0].Color;
+                                if (Shaders.Settings.IsGouraud == true)
+                                {
+                                    IO = CalculateColor(barycentricCoords, triangle);
+                                }
+                                
+
+                                Color finalColor = Shaders.FragmentShader(camera, point, normal, IO,
                                     new List<Vector4>
                                     {
                                         new Vector4(0f, 0f, -4f, 0)

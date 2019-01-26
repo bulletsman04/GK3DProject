@@ -13,22 +13,23 @@ namespace Models
         public static Settings Settings { get; set; }
         public static Color FragmentShader(Camera camera,Vector4 point, Vector4 normal, Vector4 IO, List<Vector4> lights)
         {
-            
-            Vector4 result = new Vector4();
+
+            Vector4 result = Vector4.Zero;
             if (Settings.IsPhong == true)
             {
-            result = CalculatePhong(camera, point, normal, IO, lights, result);
+            result = CalculatePhong(camera, point, normal, IO, lights);
             }
-            else
+            else if(Settings.IsGouraud == true)
             {
-                return Color.Aqua;
+                result = IO;
             }
 
             return Color.FromArgb((byte)Math.Round(255 * result.X), (byte)Math.Round(255 * result.Y), (byte)Math.Round(255 * result.Z));
         }
 
-        private static Vector4 CalculatePhong(Camera camera, Vector4 point, Vector4 normal, Vector4 IO, List<Vector4> lights, Vector4 result)
+        public static Vector4 CalculatePhong(Camera camera, Vector4 point, Vector4 normal, Vector4 IO, List<Vector4> lights)
         {
+            Vector4 result = new Vector4();
             Vector4 nLight;
             Vector4 ligthColor = new Vector4(1, 1, 1, 0);
             foreach (var light in lights)
