@@ -171,8 +171,6 @@ namespace Models
                     t.X += t.iM;
                 }
             }
-
-            ;
         }
 
         private void CheckNeighbour(List<Node> AET, int i, Vertex Pi, int iNext, Vertex PiNext)

@@ -27,7 +27,7 @@ namespace Models
         private bool _locked = false;
         private MyGraphics _myGraphics;
 
-        public ScenePresenter(BitmapManager bitmapManager)
+        public ScenePresenter(BitmapManager bitmapManager, Settings settings)
         {
             _vPHeight = bitmapManager.Height;
             _vPWidth = bitmapManager.Width;
@@ -35,6 +35,7 @@ namespace Models
             _myGraphics = new MyGraphics(_bitmapManager.MainBitmap);
             CreateProjectionMatrix();
             _scene = new Scene();
+            Shaders.Settings = settings;
             StartScene();
         }
 

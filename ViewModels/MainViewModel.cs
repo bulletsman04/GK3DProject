@@ -20,7 +20,7 @@ namespace ViewModels
             BitmapManager = new BitmapManager();
             Settings = new Settings();
             MenuViewModel = new MenuViewModel();
-            CanvasViewModel = new CanvasViewModel(BitmapManager);
+            CanvasViewModel = new CanvasViewModel(BitmapManager, Settings);
             SettingsViewModel = new SettingsViewModel(Settings);
         }
     }
