@@ -26,15 +26,16 @@ namespace Models
             _zBuffer = new float[directBitmap.Width, directBitmap.Height];
         }
 
-        public void InitializeZBuffer()
+        public void ClearBitmapInitializeZBuffer()
         {
-            for (int i = 0; i < _directBitmap.Width; i++)
+            Parallel.For(0, _directBitmap.Width, i =>
             {
-                for (int j = 0; j < _directBitmap.Height; j++)
+                Parallel.For(0, _directBitmap.Width, j =>
                 {
                     _zBuffer[i, j] = float.PositiveInfinity;
-                }
-            }
+                    _directBitmap.SetPixel(i, j, Color.Black);
+                });
+            });
         }
 
         private float CountZCoord(Vector3 barycentricCoords, FilledTriangle triangle)
@@ -148,18 +149,19 @@ namespace Models
                 AET = AET.OrderBy(node => node.X).ToList();
                 for (int i = 0; i < AET.Count - 1; i += 2)
                 {
-                    for (int j = (int)Math.Round(AET[i].X); j < (int)Math.Round(AET[i + 1].X); j++)
+                    var y1 = y;
+                    Parallel.For((int)Math.Round(AET[i].X), (int)Math.Round(AET[i + 1].X), j =>
                     {
-                        if (j < _directBitmap.Width && j >= 0 && (y - 1) < _directBitmap.Height && (y - 1) >= 0)
+                        if (j < _directBitmap.Width && j >= 0 && (y1 - 1) < _directBitmap.Height && (y1 - 1) >= 0)
                         {
-                            Vector3 barycentricCoords = CalculateBarycentric(j, y - 1, triangle);
-                        
+                            Vector3 barycentricCoords = CalculateBarycentric(j, y1 - 1, triangle);
+
                             float zp = CountZCoord(barycentricCoords, triangle);
 
-                            if (zp < _zBuffer[j, y - 1])
+                            if (zp < _zBuffer[j, y1 - 1])
                             {
                                 Vector4 normal = Vector4.Zero;
-                                Vector4 point = Vector4.Zero;;
+                                Vector4 point = Vector4.Zero; ;
                                 if (Shaders.Settings.IsPhong == true)
                                 {
                                     normal = CalculateNormal(barycentricCoords, triangle);
@@ -171,7 +173,7 @@ namespace Models
                                 {
                                     IO = CalculateColor(barycentricCoords, triangle);
                                 }
-                                
+
 
                                 Color finalColor = Shaders.FragmentShader(camera, point, normal, IO,
                                     new List<Vector4>
@@ -179,14 +181,13 @@ namespace Models
                                         new Vector4(0f, 0f, -4f, 0)
                                     });
 
-                                _directBitmap.SetPixel(j, y - 1, finalColor);
+                                _directBitmap.SetPixel(j, y1 - 1, finalColor);
 
-                                _zBuffer[j, y - 1] = zp;
+                                _zBuffer[j, y1 - 1] = zp;
                             }
 
                         }
-                    }
-
+                    });
                 }
                 // ToDo: Przerzucić wyżej
                 foreach (var t in AET)
@@ -215,18 +216,9 @@ namespace Models
         }
 
 
-        public void ClearBitmap()
-        {
-
-            for (int i = 0; i < _directBitmap.Width; i++)
-            {
-                for (int j = 0; j < _directBitmap.Height; j++)
-                {
-                     _directBitmap.SetPixel(i,j, Color.Black);
-                }
-            }
+        
         }
 
 
-    }
+    
 }

@@ -77,8 +77,7 @@ namespace Models
         
         private void RepaintScene()
         {
-            _myGraphics.ClearBitmap();
-            _myGraphics.InitializeZBuffer();
+            _myGraphics.ClearBitmapInitializeZBuffer();
 
             foreach (WorldObject worldObject in _scene.WorldObjects)
             {
