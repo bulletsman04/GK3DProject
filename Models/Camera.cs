@@ -44,14 +44,14 @@ namespace Models
 
                 0,0,0,1
             );
-            var test = Matrix4x4.Invert(ViewMatrix,out var invertedViewMatrix);
+            Matrix4x4.Invert(ViewMatrix,out var invertedViewMatrix);
             ViewMatrix = invertedViewMatrix;
         }
 
 
         public void RotateCamera()
         {
-            _alpha += (float)(0.5 * Math.PI / 180);
+            _alpha += (float)(1 * Math.PI / 180);
             CPos = new Vector3((float)(0 + 7* Math.Cos(_alpha)), (float)(0 + 7 * Math.Sin(_alpha)),-3f);
             CalculateViewMatrix();
         }

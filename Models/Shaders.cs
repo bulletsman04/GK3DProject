@@ -41,12 +41,8 @@ namespace Models
 
                 Vector4 RV = Vector4.Normalize(2 * (normal.X * nLight.X + normal.Y * nLight.Y + normal.Z * nLight.Z) * normal - nLight);
 
-                cosVR = Math.Max(V.X * RV.X + V.Y * RV.Y + V.Z * RV.Z, 0);
-                var factor = cosVR;
-                for (int i = 0; i < Settings.MPhong; i++)
-                {
-                    cosVR *= factor;
-                }
+                cosVR = (float)Math.Pow(Math.Max(V.X * RV.X + V.Y * RV.Y + V.Z * RV.Z, 0),Settings.MPhong);
+             
 
                 float cosLN = Math.Max(normal.X * nLight.X + normal.Y * nLight.Y + normal.Z * nLight.Z, 0);
                 float R = ligthColor.X * (Settings.LambertRate * IO.X * cosLN + Settings.PhongRate * cosVR);
