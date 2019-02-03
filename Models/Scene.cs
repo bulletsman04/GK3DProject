@@ -39,7 +39,7 @@ namespace Models
         {
             foreach (WorldObject worldObject in WorldObjects)
             {
-                if (worldObject.Camera != null)
+                if (worldObject.MovingCamera != null)
                 {
                     MovingObject = worldObject;
                     return;
@@ -51,14 +51,32 @@ namespace Models
         private void RegisterPropertiesChanged()
         {
             SettingsObserver = new PropertyObserver<Settings>(Settings)
-                .RegisterHandler(n => n.IsMoving, ListChangedHandler);
+                .RegisterHandler(n => n.IsMoving, MovingCameraHandler)
+                .RegisterHandler(n => n.IsStatic, StaticCameraHandler)
+                .RegisterHandler(n => n.IsStatic, ObservingCameraHandler);
 
         }
 
-        private void ListChangedHandler(Settings s)
+        private void StaticCameraHandler(Settings s)
         {
-            Camera = MovingObject.Camera;
-            MovingObject.IsCameraSet = true;
+            Camera = StaticCamera;
+            MovingObject.IsMovingCameraSet = false;
+            MovingObject.IsObservingCameraSet = false;
+
+        }
+
+        private void ObservingCameraHandler(Settings s)
+        {
+            Camera = MovingObject.ObservingCamera;
+            MovingObject.IsMovingCameraSet = false;
+            MovingObject.IsObservingCameraSet = true;
+        }
+
+        private void MovingCameraHandler(Settings s)
+        {
+            Camera = MovingObject.MovingCamera;
+            MovingObject.IsMovingCameraSet = true;
+            MovingObject.IsObservingCameraSet = false;
         }
     }
 }

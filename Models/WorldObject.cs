@@ -15,8 +15,13 @@ namespace Models
         public Matrix4x4 ModelMatrix { get; set; }
         public Vector3 Rotation { get; set; }
         public Vector3 Translation { get; set; }
-        public Camera Camera { get; set; }
-        public bool IsCameraSet { get; set; } = false;
+        public Camera MovingCamera { get; set; }
+        public Camera ObservingCamera { get; set; }
+
+        public bool IsMovingCameraSet { get; set; } = false;
+        public bool IsObservingCameraSet { get; set; } = false;
+
+        public float CameraXOffset { get; set; }
 
 
         public WorldObject(LocalObject localObject, Matrix4x4 modelMatrix)
@@ -44,10 +49,16 @@ namespace Models
                 );
             }
 
-            if (IsCameraSet)
+            if (IsMovingCameraSet)
             {
-                Camera.CPos = new Vector3(Translation.X, Translation.Y +1.1f, Translation.Z);
-                Camera.CTarget = Translation;
+                MovingCamera.CPos = new Vector3(Translation.X + CameraXOffset, Translation.Y +1.1f, Translation.Z);
+                MovingCamera.CTarget = Translation;
+            }
+
+
+            if (IsObservingCameraSet)
+            {
+                ObservingCamera.CTarget = Translation;
             }
         }
 

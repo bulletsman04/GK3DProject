@@ -204,19 +204,24 @@ namespace Models
                 {
                     case 0:
                         xTranslation = 0;
+                        bulletW.CameraXOffset = 0;
                         break;
                     case 1:
                         xTranslation = 0.4f * yTranslation;
+                        bulletW.CameraXOffset = -5f * yTranslation;
                         break;
                     case 2:
                         xTranslation = -0.4f * yTranslation;
+                        bulletW.CameraXOffset = 5f * yTranslation;
                         break;
 
                 }
 
                 counter = (++counter) % 3;
             };
-            bulletW.Camera = new Camera(bulletW.Translation, new Vector3(bulletW.Translation.X + 1f, bulletW.Translation.Y + 1f, bulletW.Translation.Z), new Vector3(0, 0, 1));
+            bulletW.MovingCamera = new Camera(Vector3.One, Vector3.One, new Vector3(0, 0, 1));
+            bulletW.ObservingCamera = new Camera( Vector3.One, new Vector3(0.1f, 0.1f, -4f), new Vector3(0, 0, 1));
+            bulletW.Update();
             foreach (var meshTriangle in bulletW.LocalObject.Mesh.Triangles)
             {
 
