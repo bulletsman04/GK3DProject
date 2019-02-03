@@ -21,7 +21,7 @@ namespace Models
             CTarget = cTarget;
             CPos = cPos;
             CUp = cUp;
-          // RotateCamera();
+          // UpdateCamera();
             CalculateViewMatrix();
         }
 
@@ -48,11 +48,12 @@ namespace Models
             ViewMatrix = invertedViewMatrix;
         }
 
+        public Action UpdatePosition { get; set; }
 
-        public void RotateCamera()
+        public void UpdateCamera()
         {
-            _alpha += (float)(1 * Math.PI / 180);
-            CPos = new Vector3((float)(0 + 7* Math.Cos(_alpha)), (float)(0 + 7* Math.Sin(_alpha)),-3f);
+            //_alpha += (float)(1 * Math.PI / 180);
+            //CPos = new Vector3((float)(0 + 7* Math.Cos(_alpha)), (float)(0 + 7* Math.Sin(_alpha)),-3f);
             CalculateViewMatrix();
         }
     }

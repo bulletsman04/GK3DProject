@@ -216,7 +216,7 @@ namespace Models
 
                 counter = (++counter) % 3;
             };
-
+            bulletW.Camera = new Camera(bulletW.Translation, new Vector3(bulletW.Translation.X + 1f, bulletW.Translation.Y + 1f, bulletW.Translation.Z), new Vector3(0, 0, 1));
             foreach (var meshTriangle in bulletW.LocalObject.Mesh.Triangles)
             {
 

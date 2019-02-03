@@ -36,7 +36,7 @@ namespace Models
             _bitmapManager = bitmapManager;
             _myGraphics = new MyGraphics(_bitmapManager.MainBitmap);
             CreateProjectionMatrix();
-            _scene = new Scene();
+            _scene = new Scene(settings);
             Settings = settings;
             Shaders.Settings = settings;
             StartScene();
@@ -62,7 +62,7 @@ namespace Models
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     _locked = true;
-                   // _scene.Camera.RotateCamera();
+                    _scene.Camera.UpdateCamera();
                     foreach (var sceneWorldObject in _scene.WorldObjects)
                     {
                         sceneWorldObject.Update();

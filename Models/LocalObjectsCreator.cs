@@ -185,7 +185,7 @@ namespace Models
         public static LocalObject CreateSphere(string name, float radius)
         {
             int m = 30;
-            int n = 30;
+            int n =30;
             int mn = m * n;
             float r = radius;
 

@@ -15,12 +15,16 @@ namespace Models
         public Matrix4x4 ModelMatrix { get; set; }
         public Vector3 Rotation { get; set; }
         public Vector3 Translation { get; set; }
+        public Camera Camera { get; set; }
+        public bool IsCameraSet { get; set; } = false;
+
 
         public WorldObject(LocalObject localObject, Matrix4x4 modelMatrix)
         {
             LocalObject = localObject;
             ModelMatrix = modelMatrix;
             Rotation = new Vector3();
+           
         }
 
         public Action UpdateRotation { get; set; }
@@ -39,6 +43,14 @@ namespace Models
                     0, 0, 0, 1
                 );
             }
+
+            if (IsCameraSet)
+            {
+                Camera.CPos = new Vector3(Translation.X, Translation.Y +1.1f, Translation.Z);
+                Camera.CTarget = Translation;
+            }
         }
+
+        
     }
 }
