@@ -1,64 +1,129 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Accord.IO;
+using Accord.Math;
 using MathNet.Numerics.LinearAlgebra;
 using Models.FillingRectangles;
+using Vector3 = Accord.Math.Vector3;
+using Vector4 = System.Numerics.Vector4;
 
 namespace Models
 {
     public class MyGraphics
     {
 
-        private double[,] _zBuffer;
-        public DirectBitmap _directBitmap;
+        private float[,] _zBuffer;
+        private float[,] _zBufferModel;
+        public DirectBitmap DirectBitmap { get; set; }
 
         public MyGraphics(DirectBitmap directBitmap)
         {
-            _directBitmap = directBitmap;
-            InitializeZBuffer(directBitmap.Width, directBitmap.Height);
+            DirectBitmap = directBitmap;
+            _zBufferModel = new float[directBitmap.Width, directBitmap.Height];
+            InitializeZBuffer();
         }
 
-        private void InitializeZBuffer(int width, int height)
+        private void  InitializeZBuffer()
         {
-            _zBuffer = new double[width, height];
-
-            for (int i = 0; i < width; i++)
+            Parallel.For(0, DirectBitmap.Width, i =>
             {
-                for (int j = 0; j < height; j++)
+                Parallel.For(0, DirectBitmap.Width, j =>
                 {
-                    _zBuffer[i, j] = double.PositiveInfinity;
-                }
-            }
+                    _zBufferModel[i, j] = float.PositiveInfinity;
+                });
+            });
+            _zBuffer = (float[,])_zBufferModel.Clone();
         }
 
-        private double CountZCoord(float x, float y, FilledTriangle triangle)
+        public void ClearZBuffer()
         {
-            List<Vertex> vertices = triangle.Vertices;
-            Vertex p1 = vertices[0];
-            Vertex p2 = vertices[1];
-            Vertex p3 = vertices[2];
+            _zBuffer = (float[,])_zBufferModel.Clone();
+        }
 
-            var A = Matrix<float>.Build.DenseOfArray(new float[,] {
-                { p1.X, p2.X, p3.X },
-                { p1.Y, p2.Y, p3.Y },
-                { 1, 1, 1 }
-            });
-            var b = Vector<float>.Build.Dense(new float[] { x, y, 1 });
-            var X = A.Solve(b);
+        private float CountZCoord(Vector3 barycentricCoords, FilledTriangle triangle)
+        {
+          
 
-            float zA = triangle.p1[2] / triangle.p1[3];
-            float zB = triangle.p2[2] / triangle.p2[3];
-            float zC = triangle.p3[2] / triangle.p3[3];
-
-
-            float z = X[0] * zA + X[1] * zB + X[2] * zC;
+            float z = barycentricCoords.X * triangle.ZA + barycentricCoords.Y * triangle.ZB + barycentricCoords.Z * triangle.ZC;
 
             return z;
         }
+
+        private Vector4 CalculateNormal(Vector3 barycentricCoords, FilledTriangle triangle)
+        {
+
+            Vector4 normal = new Vector4();
+            normal.X = barycentricCoords.X * triangle.n1.X+ barycentricCoords.Y * triangle.n2.X + barycentricCoords.Z * triangle.n3.X;
+            normal.Y = barycentricCoords.X * triangle.n1.Y + barycentricCoords.Y * triangle.n2.Y + barycentricCoords.Z * triangle.n3.Y;
+            normal.Z = barycentricCoords.X * triangle.n1.Z + barycentricCoords.Y * triangle.n2.Z + barycentricCoords.Z * triangle.n3.Z;
+            return Vector4.Normalize(normal);
+        }
+
+        private Vector4 CalculatePoint(Vector3 barycentricCoords, FilledTriangle triangle)
+        {
+
+            Vector4 point = new Vector4();
+            point.X = barycentricCoords.X * triangle.p1.X + barycentricCoords.Y * triangle.p2.X + barycentricCoords.Z * triangle.p3.X;
+            point.Y = barycentricCoords.X * triangle.p1.Y + barycentricCoords.Y * triangle.p2.Y + barycentricCoords.Z * triangle.p3.Y;
+            point.Z = barycentricCoords.X * triangle.p1.Z + barycentricCoords.Y * triangle.p2.Z + barycentricCoords.Z * triangle.p3.Z;
+            return point;
+        }
+
+        private Vector4 CalculateColor(Vector3 barycentricCoords, FilledTriangle triangle)
+        {
+
+            Vector4 point = new Vector4();
+            point.X = barycentricCoords.X * triangle.Vertices[0].Color.X + barycentricCoords.Y * triangle.Vertices[1].Color.X + barycentricCoords.Z * triangle.Vertices[2].Color.X;
+            point.Y = barycentricCoords.X * triangle.Vertices[0].Color.Y + barycentricCoords.Y * triangle.Vertices[1].Color.Y + barycentricCoords.Z * triangle.Vertices[2].Color.Y;
+            point.Z = barycentricCoords.X * triangle.Vertices[0].Color.Z + barycentricCoords.Y * triangle.Vertices[1].Color.Z + barycentricCoords.Z * triangle.Vertices[2].Color.Z;
+            return point;
+        }
+
+        private Vector3 CalculateBarycentric(int x, int y, FilledTriangle triangle)
+        {
+
+            var d = new Vector3(x, y, 1);
+
+            var w = triangle.A.Determinant;
+            var wx = Matrix3x3.CreateFromColumns(d, triangle.VB, triangle.VC).Determinant;
+            var wy = Matrix3x3.CreateFromColumns(triangle.VA, d, triangle.VC).Determinant;
+            var wz = Matrix3x3.CreateFromColumns(triangle.VA, triangle.VB, d).Determinant;
+
+            var xA = wx / w;
+            var xB = wy / w;
+            var xC = wz / w;
+
+            return  new Vector3(xA,xB,xC);
+        }
+
+        //private Vector3 CalculateBarycentricInModel(int x, int y, FilledTriangle triangle)
+        //{
+
+        //    var d = new Vector3(x, y, 1);
+
+        //    var a = new Vector3(triangle.p1.X, triangle.p1.X, 1);
+        //    var b = new Vector3(triangle.p1.X, triangle.p1.X, 1);
+        //    var c = new Vector3(triangle.p1.X, triangle.p1.X, 1);
+        //    Matrix3x3 A = Matrix3x3.CreateFromColumns(a, b, c);
+
+
+        //    var w = A.Determinant;
+        //    var wx = Matrix3x3.CreateFromColumns(d, b, c).Determinant;
+        //    var wy = Matrix3x3.CreateFromColumns(a, d, c).Determinant;
+        //    var wz = Matrix3x3.CreateFromColumns(a, b, d).Determinant;
+
+        //    var xA = wx / w;
+        //    var xB = wy / w;
+        //    var xC = wz / w;
+
+        //    return new Vector3(xA, xB, xC);
+        //}
 
         // ToDo: Zmienić na strukturę
         private class Node
@@ -77,16 +142,16 @@ namespace Models
                 X = x;
             }
         }
-        public void FillPolygon(FilledTriangle triangle, Color color)
+        public void FillPolygon(FilledTriangle triangle, Camera camera)
         {
 
+            
             List<Vertex> vertices = triangle.Vertices;
             int[] ind = Enumerable.Range(0, triangle.Vertices.Count).OrderBy(x => triangle.Vertices[x].Y).ToArray();
             int ymin = vertices[ind[0]].Y;
             int ymax = vertices[ind[vertices.Count - 1]].Y;
             int k = 0;
             List<Node> AET = new List<Node>();
-            int counter = 0;
             for (int y = ymin; y <= ymax; y++)
             {
                 while (vertices[ind[k]].Y == y - 1)
@@ -115,26 +180,44 @@ namespace Models
                 AET = AET.OrderBy(node => node.X).ToList();
                 for (int i = 0; i < AET.Count - 1; i += 2)
                 {
-                    for (int j = (int)Math.Round(AET[i].X); j < (int)Math.Round(AET[i + 1].X); j++)
+                    var y1 = y;
+                    Parallel.For((int)Math.Round(AET[i].X), (int)Math.Round(AET[i + 1].X), j =>
                     {
-                        if (j < _directBitmap.Width && j >= 0 && (y - 1) < _directBitmap.Height && (y - 1) >= 0)
+                        if (j < DirectBitmap.Width && j >= 0 && (y1 - 1) < DirectBitmap.Height && (y1 - 1) >= 0)
                         {
-                            double zp = CountZCoord(j, y - 1, triangle);
+                            Vector3 barycentricCoords = CalculateBarycentric(j, y1 - 1, triangle);
 
-                            if (zp < _zBuffer[j, y - 1])
-                            {
-                                _directBitmap.SetPixel(j, y - 1, color);
-                                counter++;
 
-                                _zBuffer[j, y - 1] = zp;
-                            }
-                            else
+                            float zp = CountZCoord(barycentricCoords, triangle);
+
+                            if (zp < _zBuffer[j, y1 - 1])
                             {
-                                ;
+                                Vector4 normal = Vector4.Zero;
+                                Vector4 point = Vector4.Zero; ;
+                                Vector4 IO = Vector4.One;
+                                if (Shaders.Settings.IsPhong == true)
+                                {
+                                    normal = CalculateNormal(barycentricCoords, triangle);
+                                    point = CalculatePoint(barycentricCoords, triangle);
+                                    IO = triangle.Vertices[0].Color;;
+                                }
+
+                               
+                                if (Shaders.Settings.IsGouraud == true)
+                                {
+                                    IO = CalculateColor(barycentricCoords, triangle);
+                                }
+
+
+                                Color finalColor = Shaders.FragmentShader(camera, point, normal, IO);
+
+                                DirectBitmap.SetPixel(j, y1 - 1, finalColor);
+
+                                _zBuffer[j, y1 - 1] = zp;
                             }
+
                         }
-                    }
-
+                    });
                 }
                 // ToDo: Przerzucić wyżej
                 foreach (var t in AET)
@@ -142,8 +225,6 @@ namespace Models
                     t.X += t.iM;
                 }
             }
-
-            ;
         }
 
         private void CheckNeighbour(List<Node> AET, int i, Vertex Pi, int iNext, Vertex PiNext)
@@ -165,18 +246,9 @@ namespace Models
         }
 
 
-        public void ClearBitmap()
-        {
-
-            for (int i = 0; i < _directBitmap.Width; i++)
-            {
-                for (int j = 0; j < _directBitmap.Height; j++)
-                {
-                     _directBitmap.SetPixel(i,j, Color.White);
-                }
-            }
+        
         }
 
 
-    }
+    
 }
