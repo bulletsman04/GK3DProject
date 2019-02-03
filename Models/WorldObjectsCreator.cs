@@ -165,6 +165,34 @@ namespace Models
 
             worldObjects.Add(turretW);
 
+
+            // barrel
+            float barrelRadius = 0.12f;
+            float barrelHeight = 0.7f;
+
+            float zBarrelOffset = -(0.3f + 0.3f + 0.3f + 0.5f + barrelRadius);
+            LocalObject barrel = LocalObjectsCreator.CreateCylinder("barrel", barrelRadius, barrelHeight);
+
+
+            Matrix4x4 barrelModel = new Matrix4x4(
+                1, 0, 0, 0f,
+                0, 0, -1, 2.7f,
+                0, 1, 0, zBarrelOffset,
+                0, 0, 0, 1
+            );
+
+            WorldObject barrelW = new WorldObject(barrel, barrelModel);
+
+
+            foreach (var meshTriangle in barrelW.LocalObject.Mesh.Triangles)
+            {
+
+                meshTriangle.Color = new Vector4(1, 1, 1, 0);
+
+            }
+
+            worldObjects.Add(barrelW);
+
             //bullet
             float radius = 0.1f;
             LocalObject bullet = LocalObjectsCreator.CreateSphere("bullet", radius);
@@ -172,7 +200,7 @@ namespace Models
 
             Matrix4x4 bulletModel = new Matrix4x4(
                 1, 0, 0, 0f,
-                0, 1, 0, 2f,
+                0, 1, 0, 1.9f,
                 0, 0, 1, zBulletOffset,
                 0, 0, 0, 1
             );
@@ -220,7 +248,7 @@ namespace Models
                 counter = (++counter) % 3;
             };
             bulletW.MovingCamera = new Camera(Vector3.One, Vector3.One, new Vector3(0, 0, 1));
-            bulletW.ObservingCamera = new Camera( Vector3.One, new Vector3(0.1f, 0.1f, -4f), new Vector3(0, 0, 1));
+            bulletW.ObservingCamera = new Camera( Vector3.One, new Vector3(0.1f, 0.1f, -3f), new Vector3(0, 0, 1));
             bulletW.Update();
             foreach (var meshTriangle in bulletW.LocalObject.Mesh.Triangles)
             {

@@ -24,10 +24,10 @@ namespace Models
             Settings = settings;
             WorldObjects = WorldObjectsCreator.Create();
             FindMovingObject();
-            StaticCamera = new Camera(new Vector3( 0f, 0, 0 ),
+            StaticCamera = new Camera(new Vector3( 0f, 3f, 0 ),
                 //ToDo: problem with 0,0,-10
                 //new Vector3(0f,-1f, -1.5f), - cant see sphere on that
-                new Vector3(5f,5f, -4f),
+                new Vector3(1f,2.5f, -4f),
                 new Vector3(0f, 0f, 1f));
             Camera = StaticCamera;
             LightCources = new List<Vector4>();
@@ -53,12 +53,15 @@ namespace Models
             SettingsObserver = new PropertyObserver<Settings>(Settings)
                 .RegisterHandler(n => n.IsMoving, MovingCameraHandler)
                 .RegisterHandler(n => n.IsStatic, StaticCameraHandler)
-                .RegisterHandler(n => n.IsStatic, ObservingCameraHandler);
+                .RegisterHandler(n => n.IsObserving, ObservingCameraHandler);
 
         }
 
         private void StaticCameraHandler(Settings s)
         {
+            if(!Settings.IsStatic)
+                return;
+
             Camera = StaticCamera;
             MovingObject.IsMovingCameraSet = false;
             MovingObject.IsObservingCameraSet = false;
@@ -67,6 +70,8 @@ namespace Models
 
         private void ObservingCameraHandler(Settings s)
         {
+            if (!Settings.IsObserving)
+                return;
             Camera = MovingObject.ObservingCamera;
             MovingObject.IsMovingCameraSet = false;
             MovingObject.IsObservingCameraSet = true;
@@ -74,6 +79,8 @@ namespace Models
 
         private void MovingCameraHandler(Settings s)
         {
+            if (!Settings.IsMoving)
+                return;
             Camera = MovingObject.MovingCamera;
             MovingObject.IsMovingCameraSet = true;
             MovingObject.IsObservingCameraSet = false;

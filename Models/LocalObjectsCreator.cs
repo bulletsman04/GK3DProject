@@ -279,6 +279,79 @@ namespace Models
             return new LocalObject(cubeMesh);
         }
 
+        public static LocalObject CreateCylinder(string name, float R, float H)
+        {
+            float step = 0.05f;
+            List<NVertex> vertices = new List<NVertex>();
+            List<Triangle> triangles = new List<Triangle>();
+            int verticesCount = 0;
+
+           
+            for (float t = 0; t < 1; t += step)
+            {
+                var n = new Vector4(0, 0, -1, 0);
+
+                vertices.Add(new NVertex(new Vector4(0, 0, 0, 1), n));
+                vertices.Add(new NVertex(FromPolarCoordinates(R, t * 2 * (float)Math.PI, 0), n));
+                vertices.Add(new NVertex(FromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0), n));
+
+                triangles.Add(new Triangle(verticesCount,verticesCount+1,verticesCount+2));
+                verticesCount += 3;
+
+
+                var p1 = FromPolarCoordinates(R, t * 2 * (float)Math.PI, 0);
+                var p2 = FromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0);
+                var p3 = FromPolarCoordinates(R, t * 2 * (float)Math.PI, H);
+                var p4 = FromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, H);
+
+                var n1 = (new Vector4(p1.X, p1.Y, 0, 0));
+                var n2 = (new Vector4(p2.X, p2.Y, 0,0));
+                var n3 = (new Vector4(p3.X, p3.Y, 0, 0));
+                var n4 = (new Vector4(p4.X, p4.Y, 0, 0));
+
+
+                vertices.Add(new NVertex(p1, n1));
+                vertices.Add(new NVertex(p2, n2));
+                vertices.Add(new NVertex(p3, n3));
+
+                triangles.Add(new Triangle(verticesCount, verticesCount + 1, verticesCount + 2));
+                verticesCount += 3;
+
+                vertices.Add(new NVertex(p2, n2));
+                vertices.Add(new NVertex(p4, n4));
+                vertices.Add(new NVertex(p3, n3));
+
+                triangles.Add(new Triangle(verticesCount, verticesCount + 1, verticesCount + 2));
+                verticesCount += 3;
+
+                n = new Vector4(0, 0, 1, 0);
+
+                vertices.Add(new NVertex(new Vector4(0, 0, H, 1), n));
+                vertices.Add(new NVertex(FromPolarCoordinates(R, t * 2 * (float)Math.PI, H), n));
+                vertices.Add(new NVertex(FromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, H), n));
+
+                triangles.Add(new Triangle(verticesCount, verticesCount + 1, verticesCount + 2));
+                verticesCount += 3;
+
+              
+            }
+            Mesh cylinderMesh = new Mesh()
+            {
+                Name = name,
+                Vertices = vertices.ToArray(),
+                Triangles = triangles.ToArray()
+            };
+
+            return new LocalObject(cylinderMesh);
+        }
+
+        private static Vector4 FromPolarCoordinates(float R, float t, float z)
+        {
+            return new Vector4(
+                R * (float)Math.Cos(t),
+                R * (float)Math.Sin(t), z, 1);
+        }
+
         private static float DegreesToRadians(float degrees) => (float)(degrees * Math.PI / 180);
     }
 }
