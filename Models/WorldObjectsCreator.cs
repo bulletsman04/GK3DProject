@@ -112,89 +112,120 @@ namespace Models
             worldObjects.Add(cube3W);
         }
 
-        //private static void CreateTurret(List<WorldObject> worldObjects)
-        //{
-        //    // base
-        //    float baseWidth = 0.6f;
-        //    float zOffset = -(0.3f + 0.3f);
-        //    LocalObject baseTurret = LocalObjectsCreator.CreateCuboid("baseTurret", baseWidth,baseWidth,0.3f);
+        private static void CreateTurret(List<WorldObject> worldObjects)
+        {
+            // base
+            float baseWidth = 0.6f;
+            float zOffset = -(0.3f + 0.3f);
+            LocalObject baseTurret = LocalObjectsCreator.CreateCuboid("baseTurret", baseWidth, baseWidth, 0.3f);
 
 
-        //    Matrix4x4 baseTurretModel = new Matrix4x4(
-        //        1, 0, 0, 0f,
-        //        0, 1, 0, 3f,
-        //        0, 0, 1, zOffset,
-        //        0, 0, 0, 1
-        //    );
+            Matrix4x4 baseTurretModel = new Matrix4x4(
+                1, 0, 0, 0f,
+                0, 1, 0, 3f,
+                0, 0, 1, zOffset,
+                0, 0, 0, 1
+            );
 
-        //    WorldObject baseTurretW = new WorldObject(baseTurret, baseTurretModel);
-
-
-        //    foreach (var meshTriangle in baseTurretW.LocalObject.Mesh.Triangles)
-        //    {
-
-        //        meshTriangle.Color = Color.SandyBrown;
-
-        //    }
-
-        //    worldObjects.Add(baseTurretW);
+            WorldObject baseTurretW = new WorldObject(baseTurret, baseTurretModel);
 
 
-        //    // turret
-        //    float turretWidth = 0.3f;
-        //    float zTurretOffset = -(0.3f + 0.3f + 0.3f + 0.5f );
-        //    LocalObject turret = LocalObjectsCreator.CreateCuboid("turret", turretWidth, turretWidth, 0.5f);
+            foreach (var meshTriangle in baseTurretW.LocalObject.Mesh.Triangles)
+            {
+
+                meshTriangle.Color = new Vector4(1, 1, 1, 0);
+
+            }
+
+            worldObjects.Add(baseTurretW);
 
 
-        //    Matrix4x4 turretModel = new Matrix4x4(
-        //        1, 0, 0, 0f,
-        //        0, 1, 0, 3f,
-        //        0, 0, 1, zTurretOffset,
-        //        0, 0, 0, 1
-        //    );
-
-        //    WorldObject turretW = new WorldObject(turret, turretModel);
+            // turret
+            float turretWidth = 0.3f;
+            float zTurretOffset = -(0.3f + 0.3f + 0.3f + 0.5f);
+            LocalObject turret = LocalObjectsCreator.CreateCuboid("turret", turretWidth, turretWidth, 0.5f);
 
 
-        //    foreach (var meshTriangle in turretW.LocalObject.Mesh.Triangles)
-        //    {
+            Matrix4x4 turretModel = new Matrix4x4(
+                1, 0, 0, 0f,
+                0, 1, 0, 3f,
+                0, 0, 1, zTurretOffset,
+                0, 0, 0, 1
+            );
 
-        //        meshTriangle.Color = Color.SaddleBrown;
-
-        //    }
-
-        //    worldObjects.Add(turretW);
-
-        //    //bullet
-        //    float radius = 0.1f;
-        //    LocalObject bullet = LocalObjectsCreator.CreateSphere("bullet", radius);
-        //    float zBulletOffset = -(0.3f + 0.3f + 0.3f + 0.5f + radius);
-
-        //    Matrix4x4 bulletModel = new Matrix4x4(
-        //        1, 0, 0, 0f,
-        //        0, 1, 0, 2f,
-        //        0, 0, 1, zBulletOffset,
-        //        0, 0, 0, 1
-        //    );
-
-        //    Random r = new Random();
-        //    var colors = new[]
-        //    {
-        //        Color.Black,Color.White
-        //    };
+            WorldObject turretW = new WorldObject(turret, turretModel);
 
 
-        //    WorldObject bulletW = new WorldObject(bullet, bulletModel);
+            foreach (var meshTriangle in turretW.LocalObject.Mesh.Triangles)
+            {
 
-        //    foreach (var meshTriangle in bulletW.LocalObject.Mesh.Triangles)
-        //    {
+                meshTriangle.Color = new Vector4(1, 1, 1, 0);
 
-        //        meshTriangle.Color = colors[r.Next(2)];
-        //        // meshTriangle.Color = Color.CornflowerBlue;
-        //    }
+            }
 
-        //    worldObjects.Add(bulletW);
-        //}
+            worldObjects.Add(turretW);
+
+            //bullet
+            float radius = 0.1f;
+            LocalObject bullet = LocalObjectsCreator.CreateSphere("bullet", radius);
+            float zBulletOffset = -(0.3f + 0.3f + 0.3f + 0.5f + radius);
+
+            Matrix4x4 bulletModel = new Matrix4x4(
+                1, 0, 0, 0f,
+                0, 1, 0, 2f,
+                0, 0, 1, zBulletOffset,
+                0, 0, 0, 1
+            );
+
+
+            Random r = new Random();
+            var colors = new[]
+            {
+                Color.Black,Color.White
+            };
+
+
+            WorldObject bulletW = new WorldObject(bullet, bulletModel);
+            bulletW.Translation = new Vector3(0, 2f, zBulletOffset);
+
+            int counter = 0;
+            float yTranslation = -0.1f;
+            float xTranslation = -0.4f * yTranslation;
+            bulletW.UpdateTranslation  = () =>
+            {
+           
+
+                bulletW.Translation = new Vector3(bulletW.Translation.X + xTranslation, bulletW.Translation.Y + yTranslation,
+                   bulletW.Translation.Z);
+                if (!(bulletW.Translation.Y <= -2f)) return;
+                bulletW.Translation = new Vector3(0, 2f, zBulletOffset);
+
+                switch (counter)
+                {
+                    case 0:
+                        xTranslation = 0;
+                        break;
+                    case 1:
+                        xTranslation = 0.4f * yTranslation;
+                        break;
+                    case 2:
+                        xTranslation = -0.4f * yTranslation;
+                        break;
+
+                }
+
+                counter = (++counter) % 3;
+            };
+
+            foreach (var meshTriangle in bulletW.LocalObject.Mesh.Triangles)
+            {
+
+              
+                 meshTriangle.Color = new Vector4(1, 1, 1, 0);
+            }
+
+            worldObjects.Add(bulletW);
+        }
 
         private static void CreateShootObjects(List<WorldObject> worldObjects)
         {
@@ -260,7 +291,7 @@ namespace Models
             List<WorldObject> worldObjects = new List<WorldObject>();
             CreateSceneBase(worldObjects);
             CreateBases(worldObjects);
-            //CreateTurret(worldObjects);
+            CreateTurret(worldObjects);
             CreateShootObjects(worldObjects);
 
             return worldObjects;

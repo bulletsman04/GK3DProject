@@ -14,6 +14,7 @@ namespace Models
         public LocalObject LocalObject { get; set; }
         public Matrix4x4 ModelMatrix { get; set; }
         public Vector3 Rotation { get; set; }
+        public Vector3 Translation { get; set; }
 
         public WorldObject(LocalObject localObject, Matrix4x4 modelMatrix)
         {
@@ -22,22 +23,22 @@ namespace Models
             Rotation = new Vector3();
         }
 
-        public Action UpdateRotation;
+        public Action UpdateRotation { get; set; }
+        public Action UpdateTranslation{ get; set; }
+
 
         public void Update()
         {
-            if(UpdateRotation!=null)
-                 UpdateRotation();
-            else
+            if (UpdateTranslation != null)
             {
-               return;
+                UpdateTranslation();
+                ModelMatrix = new Matrix4x4(
+                    1, 0, 0, Translation.X,
+                    0, 1, 0, Translation.Y,
+                    0, 0, 1, Translation.Z,
+                    0, 0, 0, 1
+                );
             }
-             ModelMatrix = new Matrix4x4(
-            (float) Math.Cos(Rotation.Z),0, (float)Math.Sin(Rotation.Z), 0,
-             0,1, 0,0,
-            (float)-Math.Sin(Rotation.Z), 0,  (float)Math.Cos(Rotation.Z), 0,
-             0, 0, 0, 1
-                 );
         }
     }
 }
