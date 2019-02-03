@@ -77,6 +77,7 @@ namespace Models
         
         private void RepaintScene()
         {
+            _bitmapManager.MainBitmap.Dispose();
             _bitmapManager.MainBitmap = new DirectBitmap(_vPWidth,_vPHeight);
             _myGraphics.DirectBitmap = _bitmapManager.MainBitmap;
             _myGraphics.ClearZBuffer();

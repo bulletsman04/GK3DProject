@@ -154,7 +154,9 @@ namespace Models
             );
 
             WorldObject turretW = new WorldObject(turret, turretModel);
-
+            turretW.Translation = new Vector3(0,3f,zTurretOffset);
+            turretW.Rotation = new Vector3(0, 0, (float)Math.PI / 5);
+            turretW.Type = ObjectType.Moving;
 
             foreach (var meshTriangle in turretW.LocalObject.Mesh.Triangles)
             {
@@ -162,8 +164,6 @@ namespace Models
                 meshTriangle.Color = new Vector4(1, 1, 1, 0);
 
             }
-
-            worldObjects.Add(turretW);
 
 
             // barrel
@@ -182,6 +182,9 @@ namespace Models
             );
 
             WorldObject barrelW = new WorldObject(barrel, barrelModel);
+            barrelW.Translation = new Vector3(0,2.7f,zBarrelOffset);
+            barrelW.Rotation = new Vector3((float)Math.PI/2,0, (float)Math.PI / 5);
+            barrelW.Type = ObjectType.Moving;
 
 
             foreach (var meshTriangle in barrelW.LocalObject.Mesh.Triangles)
@@ -191,7 +194,7 @@ namespace Models
 
             }
 
-            worldObjects.Add(barrelW);
+            
 
             //bullet
             float radius = 0.1f;
@@ -214,6 +217,7 @@ namespace Models
 
 
             WorldObject bulletW = new WorldObject(bullet, bulletModel);
+            bulletW.Type = ObjectType.Moving;
             bulletW.Translation = new Vector3(0, 2f, zBulletOffset);
 
             int counter = 0;
@@ -226,25 +230,34 @@ namespace Models
                 bulletW.Translation = new Vector3(bulletW.Translation.X + xTranslation, bulletW.Translation.Y + yTranslation,
                    bulletW.Translation.Z);
                 if (!(bulletW.Translation.Y <= -2f)) return;
-                bulletW.Translation = new Vector3(0, 2f, zBulletOffset);
 
                 switch (counter)
                 {
                     case 0:
                         xTranslation = 0;
                         bulletW.CameraXOffset = 0;
+                        turretW.Rotation = new Vector3(0, 0, 0);
+                        barrelW.Rotation = new Vector3((float)Math.PI / 2, 0, 0);
+                        bulletW.Translation = new Vector3(0, 2f, zBulletOffset);
                         break;
                     case 1:
                         xTranslation = 0.4f * yTranslation;
                         bulletW.CameraXOffset = -5f * yTranslation;
+                        turretW.Rotation = new Vector3(0, 0, -(float)Math.PI /15);
+                         barrelW.Rotation = new Vector3((float)Math.PI / 2, 0, -(float)Math.PI /20);
+                        bulletW.Translation = new Vector3(-0.1f, 2f, zBulletOffset);
                         break;
                     case 2:
                         xTranslation = -0.4f * yTranslation;
+                        turretW.Rotation = new Vector3(0, 0, (float)Math.PI / 15);
+                        barrelW.Rotation = new Vector3((float)Math.PI / 2, 0, (float)Math.PI / 20);
                         bulletW.CameraXOffset = 5f * yTranslation;
+                        bulletW.Translation = new Vector3(0.1f, 2f, zBulletOffset);
                         break;
 
                 }
 
+               
                 counter = (++counter) % 3;
             };
             bulletW.MovingCamera = new Camera(Vector3.One, Vector3.One, new Vector3(0, 0, 1));
@@ -258,6 +271,8 @@ namespace Models
             }
 
             worldObjects.Add(bulletW);
+            worldObjects.Add(barrelW);
+            worldObjects.Add(turretW);
         }
 
         private static void CreateShootObjects(List<WorldObject> worldObjects)

@@ -33,7 +33,7 @@ namespace Models
         {
             Parallel.For(0, DirectBitmap.Width, i =>
             {
-                Parallel.For(0, DirectBitmap.Width, j =>
+                Parallel.For(0, DirectBitmap.Height, j =>
                 {
                     _zBufferModel[i, j] = float.PositiveInfinity;
                 });
