@@ -229,6 +229,7 @@ namespace Models
 
                 bulletW.Translation = new Vector3(bulletW.Translation.X + xTranslation, bulletW.Translation.Y + yTranslation,
                    bulletW.Translation.Z);
+                bulletW.Rotation = new Vector3(0, bulletW.Rotation.Y + 0.4f, (float)Math.PI/2);
                 if (!(bulletW.Translation.Y <= -2f)) return;
 
                 switch (counter)
@@ -263,11 +264,22 @@ namespace Models
             bulletW.MovingCamera = new Camera(Vector3.One, Vector3.One, new Vector3(0, 0, 1));
             bulletW.ObservingCamera = new Camera( Vector3.One, new Vector3(0.1f, 0.1f, -3f), new Vector3(0, 0, 1));
             bulletW.Update();
+            int colorCounter = 0;
             foreach (var meshTriangle in bulletW.LocalObject.Mesh.Triangles)
             {
+                if (colorCounter <= bulletW.LocalObject.Mesh.Triangles.Length / 2)
+                {
+                    meshTriangle.Color = new Vector4(1,1, 0, 0);
+                }
+                else
+                {
+                    meshTriangle.Color = new Vector4(0, 1, 1, 0);
 
-              
-                 meshTriangle.Color = new Vector4(1, 1, 1, 0);
+                }
+
+                colorCounter++;
+
+
             }
 
             worldObjects.Add(bulletW);

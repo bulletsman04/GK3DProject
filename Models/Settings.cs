@@ -26,7 +26,9 @@ namespace Models
         {
             Lights = new List<Vector4>()
             {
-                new Vector4(0,0,-3f,0)
+                new Vector4(3f,3f,-3f,0),
+                new Vector4(-3f,-3f,-3f,0),
+
             };
         }
 

@@ -63,7 +63,15 @@ namespace Models
                     0, 0, 0, 1
                 );
             }
-
+            if (Rotation.Y != 0)
+            {
+                ModelMatrix *= new Matrix4x4(
+                    (float)Math.Cos(Rotation.Y), 0, (float)Math.Sin(Rotation.Y), 0,
+                    0, 1, 0, 0,
+                    -(float)Math.Sin(Rotation.Y), 0, (float)Math.Cos(Rotation.Y), 0,
+                    0, 0, 0, 1
+                );
+            }
             if (Rotation.Z != 0)
             {
                 ModelMatrix *= new Matrix4x4(
@@ -73,7 +81,7 @@ namespace Models
                     0, 0, 0, 1
                 );
             }
-
+          
             if (Rotation.X != 0)
             {
                 ModelMatrix *= new Matrix4x4(
