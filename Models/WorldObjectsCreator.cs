@@ -13,6 +13,7 @@ namespace Models
 {
     public static class WorldObjectsCreator
     {
+        private static WorldObject ShootBall;
         private static void CreateSceneBase(List<WorldObject> worldObjects)
         {
             LocalObject cuboid1 = LocalObjectsCreator.CreateCuboid("cuboid1", 4, 3, 0.3f);
@@ -111,7 +112,65 @@ namespace Models
 
             worldObjects.Add(cube3W);
         }
+        private static void CreateShootObjects(List<WorldObject> worldObjects)
+        {
+            Random r = new Random();
+            var colors = new Color[9]
+            {
+                Color.Purple, Color.Green, Color.Orange, Color.Brown, Color.Blue,Color.Gold,Color.AliceBlue,Color.CornflowerBlue, Color.DarkBlue
+            };
 
+            //sphere1
+            float radius = 0.3f;
+            LocalObject sphere1 = LocalObjectsCreator.CreateSphere("sphere1", radius);
+            float zOffset = -(0.3f + 0.8f + 0.3f);
+
+            Matrix4x4 sphere1Model = new Matrix4x4(
+                1, 0, 0, 0f,
+                0, 1, 0, -2f,
+                0, 0, 1, zOffset,
+                0, 0, 0, 1
+            );
+
+            //Matrix4x4 sphere1Model = new Matrix4x4(
+            //    1, 0, 0, 0f,
+            //    0, 1, 0, 0,
+            //    0, 0, 1, 0,
+            //    0, 0, 0, 1
+            //);
+
+            WorldObject sphere1W = new WorldObject(sphere1, sphere1Model);
+            sphere1W.Translation = new Vector3(0,-2f,zOffset);
+
+            foreach (var meshTriangle in sphere1W.LocalObject.Mesh.Triangles)
+            {
+
+                //meshTriangle.Color = colors[r.Next(9)];
+                meshTriangle.Color = new Vector4(0, 0, 1, 0);
+            }
+
+            ShootBall = sphere1W;
+            worldObjects.Add(sphere1W);
+
+            ////// cone1
+            //LocalObject cone1 = LocalObjectsCreator.CreateCone("cone1",0.3f,0.4f);
+            //float zConeOffset = -(0.3f + 0.8f + 0.4f);
+            //Matrix4x4 cone1Model = new Matrix4x4(
+            //    1, 0, 0, 1.5f,
+            //    0, 1, 0, -2f,
+            //    0, 0, 1, zConeOffset,
+            //    0, 0, 0, 1
+            //);
+
+            //WorldObject cone1W = new WorldObject(cone1, cone1Model);
+
+            //foreach (var meshTriangle in cone1W.LocalObject.Mesh.Triangles)
+            //{
+            //    var triangle = meshTriangle;
+            //    triangle.Color = Color.Aqua;
+            //}
+            //worldObjects.Add(cone1W);
+        }
         private static void CreateTurret(List<WorldObject> worldObjects)
         {
             // base
@@ -242,6 +301,28 @@ namespace Models
                         bulletW.Translation = new Vector3(0, 2f, zBulletOffset);
                         break;
                     case 1:
+                        ShootBall.Type = ObjectType.Moving;
+                        float bounce = 0;
+                        float step = -0.1f;
+                        Vector3 initTranslation = ShootBall.Translation;
+                        ShootBall.UpdateTranslation = () =>
+                        {
+                            bounce += step;
+                            ShootBall.Translation += new Vector3(0, 0, step);
+                            if (initTranslation.Z==ShootBall.Translation.Z)
+                            {
+                                ShootBall.Type = ObjectType.Static;
+                                ShootBall.Translation = initTranslation;
+                                return;
+                            }
+
+                            if (bounce <= -0.5f)
+                            {
+                                step *= -1;
+                            }
+                            
+                          
+                        };
                         xTranslation = 0.4f * yTranslation;
                         bulletW.CameraXOffset = -5f * yTranslation;
                         turretW.Rotation = new Vector3(0, 0, -(float)Math.PI /15);
@@ -287,63 +368,7 @@ namespace Models
             worldObjects.Add(turretW);
         }
 
-        private static void CreateShootObjects(List<WorldObject> worldObjects)
-        {
-            Random r = new Random();
-            var colors = new Color[9]
-            {
-                Color.Purple, Color.Green, Color.Orange, Color.Brown, Color.Blue,Color.Gold,Color.AliceBlue,Color.CornflowerBlue, Color.DarkBlue
-            };
-
-            //sphere1
-            float radius = 0.3f;
-            LocalObject sphere1 = LocalObjectsCreator.CreateSphere("sphere1",radius);
-            float zOffset = -(0.3f + 0.8f + 0.3f);
-
-            Matrix4x4 sphere1Model = new Matrix4x4(
-                1, 0, 0, 0f,
-                0, 1, 0, -2f,
-                0, 0, 1, zOffset,
-                0, 0, 0, 1
-            );
-
-            //Matrix4x4 sphere1Model = new Matrix4x4(
-            //    1, 0, 0, 0f,
-            //    0, 1, 0, 0,
-            //    0, 0, 1, 0,
-            //    0, 0, 0, 1
-            //);
-
-            WorldObject sphere1W = new WorldObject(sphere1, sphere1Model);
-
-            foreach (var meshTriangle in sphere1W.LocalObject.Mesh.Triangles)
-            {
-
-                //meshTriangle.Color = colors[r.Next(9)];
-                 meshTriangle.Color = new Vector4(0,0,1,0);
-            }
-
-            worldObjects.Add(sphere1W);
-
-            ////// cone1
-            //LocalObject cone1 = LocalObjectsCreator.CreateCone("cone1",0.3f,0.4f);
-            //float zConeOffset = -(0.3f + 0.8f + 0.4f);
-            //Matrix4x4 cone1Model = new Matrix4x4(
-            //    1, 0, 0, 1.5f,
-            //    0, 1, 0, -2f,
-            //    0, 0, 1, zConeOffset,
-            //    0, 0, 0, 1
-            //);
-
-            //WorldObject cone1W = new WorldObject(cone1, cone1Model);
-
-            //foreach (var meshTriangle in cone1W.LocalObject.Mesh.Triangles)
-            //{
-            //    var triangle = meshTriangle;
-            //    triangle.Color = Color.Aqua;
-            //}
-            //worldObjects.Add(cone1W);
-        }
+       
 
 
         public static List<WorldObject> Create()

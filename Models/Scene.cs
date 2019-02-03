@@ -27,7 +27,7 @@ namespace Models
             StaticCamera = new Camera(new Vector3( 0f,0, 0 ),
                 //ToDo: problem with 0,0,-10
                 //new Vector3(0f,-1f, -1.5f), - cant see sphere on that
-                new Vector3(5f,5f, -4f),
+                new Vector3(5f,1f, -4f),
                 new Vector3(0f, 0f, 1f));
             Camera = StaticCamera;
             LightCources = new List<Vector4>();
