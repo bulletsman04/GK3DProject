@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Accord.IO;
 using Accord.Math;
 using MathNet.Numerics.LinearAlgebra;
 using Models.FillingRectangles;
@@ -18,24 +19,31 @@ namespace Models
     {
 
         private float[,] _zBuffer;
-        public DirectBitmap _directBitmap;
+        private float[,] _zBufferModel;
+        public DirectBitmap DirectBitmap { get; set; }
 
         public MyGraphics(DirectBitmap directBitmap)
         {
-            _directBitmap = directBitmap;
-            _zBuffer = new float[directBitmap.Width, directBitmap.Height];
+            DirectBitmap = directBitmap;
+            _zBufferModel = new float[directBitmap.Width, directBitmap.Height];
+            InitializeZBuffer();
         }
 
-        public void ClearBitmapInitializeZBuffer()
+        private void  InitializeZBuffer()
         {
-            Parallel.For(0, _directBitmap.Width, i =>
+            Parallel.For(0, DirectBitmap.Width, i =>
             {
-                Parallel.For(0, _directBitmap.Width, j =>
+                Parallel.For(0, DirectBitmap.Width, j =>
                 {
-                    _zBuffer[i, j] = float.PositiveInfinity;
-                    _directBitmap.SetPixel(i, j, Color.Black);
+                    _zBufferModel[i, j] = float.PositiveInfinity;
                 });
             });
+            _zBuffer = (float[,])_zBufferModel.Clone();
+        }
+
+        public void ClearZBuffer()
+        {
+            _zBuffer = (float[,])_zBufferModel.Clone();
         }
 
         private float CountZCoord(Vector3 barycentricCoords, FilledTriangle triangle)
@@ -94,6 +102,29 @@ namespace Models
             return  new Vector3(xA,xB,xC);
         }
 
+        //private Vector3 CalculateBarycentricInModel(int x, int y, FilledTriangle triangle)
+        //{
+
+        //    var d = new Vector3(x, y, 1);
+
+        //    var a = new Vector3(triangle.p1.X, triangle.p1.X, 1);
+        //    var b = new Vector3(triangle.p1.X, triangle.p1.X, 1);
+        //    var c = new Vector3(triangle.p1.X, triangle.p1.X, 1);
+        //    Matrix3x3 A = Matrix3x3.CreateFromColumns(a, b, c);
+
+
+        //    var w = A.Determinant;
+        //    var wx = Matrix3x3.CreateFromColumns(d, b, c).Determinant;
+        //    var wy = Matrix3x3.CreateFromColumns(a, d, c).Determinant;
+        //    var wz = Matrix3x3.CreateFromColumns(a, b, d).Determinant;
+
+        //    var xA = wx / w;
+        //    var xB = wy / w;
+        //    var xC = wz / w;
+
+        //    return new Vector3(xA, xB, xC);
+        //}
+
         // ToDo: Zmienić na strukturę
         private class Node
         {
@@ -111,7 +142,7 @@ namespace Models
                 X = x;
             }
         }
-        public void FillPolygon(FilledTriangle triangle, Color color, Camera camera)
+        public void FillPolygon(FilledTriangle triangle, Camera camera)
         {
 
             
@@ -152,9 +183,10 @@ namespace Models
                     var y1 = y;
                     Parallel.For((int)Math.Round(AET[i].X), (int)Math.Round(AET[i + 1].X), j =>
                     {
-                        if (j < _directBitmap.Width && j >= 0 && (y1 - 1) < _directBitmap.Height && (y1 - 1) >= 0)
+                        if (j < DirectBitmap.Width && j >= 0 && (y1 - 1) < DirectBitmap.Height && (y1 - 1) >= 0)
                         {
                             Vector3 barycentricCoords = CalculateBarycentric(j, y1 - 1, triangle);
+
 
                             float zp = CountZCoord(barycentricCoords, triangle);
 
@@ -162,26 +194,24 @@ namespace Models
                             {
                                 Vector4 normal = Vector4.Zero;
                                 Vector4 point = Vector4.Zero; ;
+                                Vector4 IO = Vector4.One;
                                 if (Shaders.Settings.IsPhong == true)
                                 {
                                     normal = CalculateNormal(barycentricCoords, triangle);
                                     point = CalculatePoint(barycentricCoords, triangle);
+                                    IO = triangle.Vertices[0].Color;;
                                 }
 
-                                Vector4 IO = triangle.Vertices[0].Color;
+                               
                                 if (Shaders.Settings.IsGouraud == true)
                                 {
                                     IO = CalculateColor(barycentricCoords, triangle);
                                 }
 
 
-                                Color finalColor = Shaders.FragmentShader(camera, point, normal, IO,
-                                    new List<Vector4>
-                                    {
-                                        new Vector4(0f, 0f, -4f, 0)
-                                    });
+                                Color finalColor = Shaders.FragmentShader(camera, point, normal, IO);
 
-                                _directBitmap.SetPixel(j, y1 - 1, finalColor);
+                                DirectBitmap.SetPixel(j, y1 - 1, finalColor);
 
                                 _zBuffer[j, y1 - 1] = zp;
                             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using MvvmFoundation.Wpf;
@@ -19,7 +20,15 @@ namespace Models
         private float _lambertRate = 1f;
         private float _phongRate = 0.2f;
         private int _mPhong = 50;
+        public List<Vector4> Lights { get; set; }
 
+        public Settings()
+        {
+            Lights = new List<Vector4>()
+            {
+                new Vector4(0,0,-3f,0)
+            };
+        }
 
         public bool IsPhong
         {

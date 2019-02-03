@@ -26,6 +26,7 @@ namespace Models.FillingRectangles
         public Vector3 VA { get; set; }
         public Vector3 VB { get; set; }
         public Vector3 VC { get; set; }
+        public Vector4 Color { get; set; }
 
 
 

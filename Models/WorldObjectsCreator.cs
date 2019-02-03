@@ -30,7 +30,7 @@ namespace Models
             foreach (var meshTriangle in cuboid1W.LocalObject.Mesh.Triangles)
             {
 
-                meshTriangle.Color = Color.DarkRed;
+                meshTriangle.Color = new Vector4(1,0,0,0);
 
             }
 
@@ -59,7 +59,7 @@ namespace Models
             foreach (var meshTriangle in cube1W.LocalObject.Mesh.Triangles)
             {
 
-                meshTriangle.Color = Color.Green;
+                meshTriangle.Color = new Vector4(0,1,0,0);
 
             }
 
@@ -82,7 +82,7 @@ namespace Models
             foreach (var meshTriangle in cube2W.LocalObject.Mesh.Triangles)
             {
 
-                meshTriangle.Color = Color.Gold;
+                meshTriangle.Color = new Vector4(1,1,0,0);
 
             }
 
@@ -105,7 +105,7 @@ namespace Models
             foreach (var meshTriangle in cube3W.LocalObject.Mesh.Triangles)
             {
 
-                meshTriangle.Color = Color.White;
+                meshTriangle.Color = new Vector4(1,1,1,0);
 
             }
 
@@ -228,8 +228,8 @@ namespace Models
             foreach (var meshTriangle in sphere1W.LocalObject.Mesh.Triangles)
             {
 
-                meshTriangle.Color = colors[r.Next(9)];
-                // meshTriangle.Color = Color.CornflowerBlue;
+                //meshTriangle.Color = colors[r.Next(9)];
+                 meshTriangle.Color = new Vector4(0,0,1,0);
             }
 
             worldObjects.Add(sphere1W);

@@ -77,13 +77,16 @@ namespace Models
         
         private void RepaintScene()
         {
-            _myGraphics.ClearBitmapInitializeZBuffer();
+            _bitmapManager.MainBitmap = new DirectBitmap(_vPWidth,_vPHeight);
+            _myGraphics.DirectBitmap = _bitmapManager.MainBitmap;
+            _myGraphics.ClearZBuffer();
 
             foreach (WorldObject worldObject in _scene.WorldObjects)
             {
                 foreach (Triangle triangle in worldObject.LocalObject.Mesh.Triangles)
                 {
 
+                    FilledTriangle filledtriangle = new FilledTriangle();
                     Vector4 p1 = worldObject.LocalObject.Mesh.Vertices[triangle.A].Point;
                     Vector4 p2 = worldObject.LocalObject.Mesh.Vertices[triangle.B].Point;
                     Vector4 p3 = worldObject.LocalObject.Mesh.Vertices[triangle.C].Point;
@@ -125,12 +128,8 @@ namespace Models
                     float p3ex = ((v3x + 1) * _vPWidth / 2);
                     float p3ey = ((v3y + 1) * _vPHeight / 2);
 
-                    FilledTriangle filledtriangle = new FilledTriangle();
 
                     filledtriangle.Vertices = new List<Vertex>();
-                    filledtriangle.Vertices.Add(new Vertex((int) p1ex, (int) p1ey, new Vector4(0, 1, 0, 0)));
-                    filledtriangle.Vertices.Add(new Vertex((int) p2ex, (int) p2ey, new Vector4(0, 1, 0, 0)));
-                    filledtriangle.Vertices.Add(new Vertex((int) p3ex, (int) p3ey, new Vector4(0, 1, 0, 0)));
                     Accord.Math.Vector3 a = new Accord.Math.Vector3(p1ex, p1ey, 1);
                     Accord.Math.Vector3 b = new Accord.Math.Vector3(p2ex, p2ey, 1);
                     Accord.Math.Vector3 c = new Accord.Math.Vector3(p3ex, p3ey, 1);
@@ -147,23 +146,27 @@ namespace Models
                     filledtriangle.p1 = p1M;
                     filledtriangle.p2 = p2M;
                     filledtriangle.p3 = p3M;
+                    filledtriangle.Color = triangle.Color;
 
                     if (Settings.IsGouraud)
                     {
-                        List<Vector4> lights = new List<Vector4>
-                        {
-                            new Vector4(0f, 0f, -4f, 0)
-                        };
-                        filledtriangle.Vertices[0] = new Vertex(filledtriangle.Vertices[0].X, filledtriangle.Vertices[0].Y,
-                            Shaders.CalculatePhong(_scene.Camera, p1M, n1M, new Vector4(0,1,0,0), lights));
-                        filledtriangle.Vertices[1] = new Vertex(filledtriangle.Vertices[1].X, filledtriangle.Vertices[1].Y,
-                            Shaders.CalculatePhong(_scene.Camera, p1M, n1M, new Vector4(0, 1, 0, 0), lights));
-                        filledtriangle.Vertices[2] = new Vertex(filledtriangle.Vertices[2].X, filledtriangle.Vertices[2].Y,
-                            Shaders.CalculatePhong(_scene.Camera, p1M, n1M, new Vector4(0, 1, 0, 0), lights));
+                        filledtriangle.Vertices.Add(new Vertex((int)p1ex, (int)p1ey,
+                            Shaders.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color)));
+                        filledtriangle.Vertices.Add(new Vertex((int)p2ex, (int)p2ey,
+                            Shaders.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color)));
+                        filledtriangle.Vertices.Add(new Vertex((int)p3ex, (int)p3ey,
+                            Shaders.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color)));
+                    }
+                    else if(Settings.IsPhong)
+                    {
+
+                        filledtriangle.Vertices.Add(new Vertex((int)p1ex, (int)p1ey, triangle.Color));
+                        filledtriangle.Vertices.Add(new Vertex((int)p2ex, (int)p2ey, triangle.Color));
+                        filledtriangle.Vertices.Add(new Vertex((int)p3ex, (int)p3ey, triangle.Color));
                     }
 
 
-                    _myGraphics.FillPolygon(filledtriangle, triangle.Color, _scene.Camera);
+                    _myGraphics.FillPolygon(filledtriangle,_scene.Camera);
                     
                 }
             }
@@ -182,7 +185,7 @@ namespace Models
             return true;
         }
 
-        private Vector4 vectorShader(Vector4 point, Vector4 normal, Matrix4x4 modelMatrix, out Vector4 pM,
+        private Vector4 vectorShader(Vector4 point, Vector4 normal, Matrix4x4 modelMatrix,  out Vector4 pM,
             out Vector4 nM)
         {
             Matrix4x4 modelVertex = modelMatrix.Multiply(point);

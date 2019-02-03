@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Remoting.Lifetime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,13 +12,13 @@ namespace Models
     public static class Shaders
     {
         public static Settings Settings { get; set; }
-        public static Color FragmentShader(Camera camera,Vector4 point, Vector4 normal, Vector4 IO, List<Vector4> lights)
+        public static Color FragmentShader(Camera camera,Vector4 point, Vector4 normal, Vector4 IO)
         {
 
             Vector4 result = Vector4.Zero;
             if (Settings.IsPhong == true)
             {
-            result = CalculatePhong(camera, point, normal, IO, lights);
+            result = CalculatePhong(camera, point, normal, IO);
             }
             else if(Settings.IsGouraud == true)
             {
@@ -27,12 +28,12 @@ namespace Models
             return Color.FromArgb((byte)Math.Round(255 * result.X), (byte)Math.Round(255 * result.Y), (byte)Math.Round(255 * result.Z));
         }
 
-        public static Vector4 CalculatePhong(Camera camera, Vector4 point, Vector4 normal, Vector4 IO, List<Vector4> lights)
+        public static Vector4 CalculatePhong(Camera camera, Vector4 point, Vector4 normal, Vector4 IO)
         {
             Vector4 result = new Vector4();
             Vector4 nLight;
             Vector4 ligthColor = new Vector4(1, 1, 1, 0);
-            foreach (var light in lights)
+            foreach (var light in Settings.Lights)
             {
                 nLight = Vector4.Normalize(new Vector4(light.X - point.X, light.Y - point.Y, (light.Z - point.Z), 0));
                 float cosVR = 0;
