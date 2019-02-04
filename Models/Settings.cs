@@ -20,6 +20,8 @@ namespace Models
         private float _lambertRate = 1f;
         private float _phongRate = 0.2f;
         private int _mPhong = 50;
+        private float _dayFactor = 1;
+
         public List<LightBase> Lights { get; set; }
 
         public Settings()
@@ -107,6 +109,16 @@ namespace Models
             {
                 _isMoving = value;
                 RaisePropertyChanged("IsMoving");
+            }
+        }
+
+        public float DayFactor
+        {
+            get { return _dayFactor; }
+            set
+            {
+                _dayFactor = value;
+                RaisePropertyChanged("DayFactor");
             }
         }
     }

@@ -38,11 +38,11 @@ namespace Models
                 nLight = Vector4.Normalize(light.LightPosition - point);
                 if (light is PointLight)
                 {
-                    lightColor = light.LigthColor;
+                    lightColor = light.LigthColor*Settings.DayFactor;
                 }
                 else if (light is SpotLight spotLight)
                 {
-                    int factor = 5;
+                    int factor = 15;
                     float cosDL = (float)Math.Pow(Math.Max(-spotLight.DVector.X * nLight.X + -spotLight.DVector.Y * nLight.Y +
                                   -spotLight.DVector.Z * nLight.Z,0),factor);
                     lightColor = spotLight.LigthColor * cosDL;
