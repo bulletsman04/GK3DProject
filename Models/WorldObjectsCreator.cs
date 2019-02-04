@@ -16,6 +16,7 @@ namespace Models
         private static WorldObject ShootBall;
         private static void CreateSceneBase(List<WorldObject> worldObjects)
         {
+
             LocalObject cuboid1 = LocalObjectsCreator.CreateCuboid("cuboid1", 4, 3, 0.3f);
 
 
@@ -159,26 +160,26 @@ namespace Models
                 meshTriangle.Color = new Vector4(0, 0, 1, 0);
             }
             
-            worldObjects.Add(cylinderW);
+            //worldObjects.Add(cylinderW);
 
-            ////// cone1
-            //LocalObject cone1 = LocalObjectsCreator.CreateCone("cone1",0.3f,0.4f);
-            //float zConeOffset = -(0.3f + 0.8f + 0.4f);
-            //Matrix4x4 cone1Model = new Matrix4x4(
-            //    1, 0, 0, 1.5f,
-            //    0, 1, 0, -2f,
-            //    0, 0, 1, zConeOffset,
-            //    0, 0, 0, 1
-            //);
+            //// cone1
+            LocalObject cone1 = LocalObjectsCreator.CreateCone("cone1", 0.3f, 0.4f);
+            float zConeOffset = -(0.3f + 0.8f + 0.4f);
+            Matrix4x4 cone1Model = new Matrix4x4(
+                1, 0, 0, 1.5f,
+                0, 1, 0, -2f,
+                0, 0, 1, zConeOffset,
+                0, 0, 0, 1
+            );
 
-            //WorldObject cone1W = new WorldObject(cone1, cone1Model);
+            WorldObject cone1W = new WorldObject(cone1, cone1Model);
 
-            //foreach (var meshTriangle in cone1W.LocalObject.Mesh.Triangles)
-            //{
-            //    var triangle = meshTriangle;
-            //    triangle.Color = Color.Aqua;
-            //}
-            //worldObjects.Add(cone1W);
+            foreach (var meshTriangle in cone1W.LocalObject.Mesh.Triangles)
+            {
+                var triangle = meshTriangle;
+                triangle.Color = new Vector4(1,0,0,0);
+            }
+            worldObjects.Add(cone1W);
         }
         private static void CreateTurret(List<WorldObject> worldObjects)
         {
@@ -332,14 +333,14 @@ namespace Models
                             
                           
                         };
-                        xTranslation = 0.4f * yTranslation;
+                        xTranslation = 0.35f * yTranslation;
                         bulletW.CameraXOffset = -5f * yTranslation;
                         turretW.Rotation = new Vector3(0, 0, -(float)Math.PI /15);
                          barrelW.Rotation = new Vector3((float)Math.PI / 2, 0, -(float)Math.PI /20);
                         bulletW.Translation = new Vector3(-0.1f, 2f, zBulletOffset);
                         break;
                     case 2:
-                        xTranslation = -0.4f * yTranslation;
+                        xTranslation = -0.35f * yTranslation;
                         turretW.Rotation = new Vector3(0, 0, (float)Math.PI / 15);
                         barrelW.Rotation = new Vector3((float)Math.PI / 2, 0, (float)Math.PI / 20);
                         bulletW.CameraXOffset = 5f * yTranslation;

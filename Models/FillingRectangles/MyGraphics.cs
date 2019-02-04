@@ -190,13 +190,13 @@ namespace Models
 
                                 _zBuffer[j, y1 - 1] = zp;
 
-                                if (j < minX)
+                                if (j <= minX)
                                     minX = j;
-                                if( j > maxX)
+                                if( j >= maxX)
                                     maxX = j;
-                                if (y-1 < minY)
+                                if (y-1 <= minY)
                                     minY = y-1;
-                                if (y-1 > maxY)
+                                if (y-1 >= maxY)
                                     maxY = y-1;
 
                             }
@@ -214,9 +214,9 @@ namespace Models
 
         public void FinalFill()
         {
-            Parallel.For(minX, maxX, i =>
+            Parallel.For(minX, maxX+1, i =>
             {
-                Parallel.For(minY, maxY, j =>
+                Parallel.For(minY, maxY+1, j =>
                 {
                     ShadingArguments shadingArguments = arguments[i, j];
                     if (shadingArguments.Camera != null)
@@ -230,6 +230,7 @@ namespace Models
                     }
                 });
             });
+            
         }
 
         private void CheckNeighbour(List<Node> AET, int i, Vertex Pi, int iNext, Vertex PiNext)
