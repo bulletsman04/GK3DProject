@@ -28,7 +28,7 @@ namespace Models
         {
             Lights = new List<LightBase>()
             {
-                new PointLight(new Vector4(3f,3f,-3f,0),new Vector4(1,1,1,0)),
+                new PointLight(new Vector4(-3f,3f,-3f,0),new Vector4(1,1,1,0)),
                 new PointLight(new Vector4(-3f,-3f,-3f,0),new Vector4(1,1,1,0))
             };
         }

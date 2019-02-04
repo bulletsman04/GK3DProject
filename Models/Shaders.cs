@@ -14,6 +14,7 @@ namespace Models
         public static Settings Settings { get; set; }
         public static Color FragmentShader(Camera camera,Vector4 point, Vector4 normal, Vector4 IO)
         {
+           
 
             Vector4 result = Vector4.Zero;
             if (Settings.IsPhong == true)
