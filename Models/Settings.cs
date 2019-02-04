@@ -20,6 +20,8 @@ namespace Models
         private float _phongRate = 0.2f;
         private int _mPhong = 50;
         private float _dayFactor = 1;
+        private int _width = 500;
+        private int _height = 500;
 
         public List<LightBase> Lights { get; set; }
 
@@ -128,8 +130,24 @@ namespace Models
             set
             {
                 _ambient = value;
-                RaisePropertyChanged("Ambient");
             }
+        }
+
+        public int Width
+        {
+            get { return _width; }
+            set
+            {
+                _width = value;
+                _height = value;
+                RaisePropertyChanged("Width");
+            }
+        }
+
+        public int Height
+        {
+            get { return _height; }
+            set { _height = value; }
         }
     }
 }

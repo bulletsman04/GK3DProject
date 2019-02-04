@@ -26,17 +26,16 @@ namespace Models
         public MyGraphics(DirectBitmap directBitmap)
         {
             DirectBitmap = directBitmap;
-            _zBuffer = new float[directBitmap.Width, directBitmap.Height];
-            arguments = new ShadingArguments[directBitmap.Width, directBitmap.Height];
-
-            InitializeZBuffer();
+            InitializeZBuffer(directBitmap.Width,DirectBitmap.Height);
         }
 
-        private void  InitializeZBuffer()
+        public void  InitializeZBuffer(int width, int height)
         {
-            Parallel.For(0, DirectBitmap.Width, i =>
+            _zBuffer = new float[width, height];
+            arguments = new ShadingArguments[width, height];
+            Parallel.For(0, width, i =>
             {
-                Parallel.For(0, DirectBitmap.Height, j =>
+                Parallel.For(0, height, j =>
                 {
                     _zBuffer[i, j] = float.PositiveInfinity;
                     arguments[i, j] = new ShadingArguments(null,Vector4.Zero, Vector4.Zero, Vector4.Zero );

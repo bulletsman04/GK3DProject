@@ -20,8 +20,8 @@ namespace Models
                 RaisePropertyChanged("MainBitmap");
             }
         }
-        public int Width =500;
-        public int Height =>500;
+        public int Width =400;
+        public int Height =>400;
 
 
         public BitmapManager()

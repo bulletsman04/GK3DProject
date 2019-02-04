@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -11,6 +12,7 @@ using MathNet.Numerics.LinearAlgebra;
 using Models.FillingRectangles;
 using MvvmFoundation.Wpf;
 using Matrix4x4 = System.Numerics.Matrix4x4;
+using Timer = System.Timers.Timer;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
 
@@ -26,7 +28,7 @@ namespace Models
         private Timer _timer;
         private bool _locked = false;
         private MyGraphics _myGraphics;
-
+        public PropertyObserver<Settings> SettingsObserver { get; set; }
         public Settings Settings { get; set; }
 
         public ScenePresenter(BitmapManager bitmapManager, Settings settings)
@@ -39,9 +41,27 @@ namespace Models
             _scene = new Scene(settings);
             Settings = settings;
             Shaders.Settings = settings;
+
+            RegisterPropertiesChanged();
             StartScene();
         }
+        private void RegisterPropertiesChanged()
+        {
+            SettingsObserver = new PropertyObserver<Settings>(Settings)
+                .RegisterHandler(n => n.Width, StaticCameraHandler);
+           
 
+        }
+
+        private void StaticCameraHandler(Settings s)
+        {_timer.Stop();
+         
+            _vPHeight = Settings.Height;
+            _vPWidth = Settings.Width;
+            CreateProjectionMatrix();
+            _myGraphics.InitializeZBuffer(_vPWidth,_vPHeight);
+            _timer.Start();
+        }
         public void StartScene()
         {
             SetTimer();
@@ -151,7 +171,7 @@ namespace Models
                             filledtriangle.Vertices.Add(new Vertex((int)p3ex, (int)p3ey,
                                 Shaders.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color)));
                         }
-                        else if (Settings.IsPhong)
+                        else
                         {
 
                             filledtriangle.Vertices.Add(new Vertex((int)p1ex, (int)p1ey, triangle.Color));

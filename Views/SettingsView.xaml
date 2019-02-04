@@ -121,8 +121,15 @@
                         <Slider Minimum="0" Maximum="1" TickFrequency="0.01" Value="{Binding Settings.DayFactor}" Width="80"></Slider>
                         <TextBlock Margin="5 0 0 0 " FontSize="10" > Dzień</TextBlock>
                     </WrapPanel>
-                   
+                    <TextBlock Style="{StaticResource TextStyle}">Jakość</TextBlock>
+                    <WrapPanel Style="{StaticResource WrapStyle}">
+                        <TextBlock Margin="10 0 0 0" FontSize="10"> Szybkość</TextBlock>
+                        <Slider Minimum="200" Maximum="1000" TickFrequency="100" Value="{Binding Settings.Width}" Width="80"></Slider>
+                        <TextBlock Margin="5 0 0 0 " FontSize="10" > Jakość</TextBlock>
+                    </WrapPanel>
+
                 </StackPanel>
+
             </Border>
 
 
