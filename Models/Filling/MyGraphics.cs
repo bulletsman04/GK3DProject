@@ -60,9 +60,9 @@ namespace Models
         {
 
             Vector4 normal = new Vector4();
-            normal.X = barycentricCoords.X * triangle.n1.X+ barycentricCoords.Y * triangle.n2.X + barycentricCoords.Z * triangle.n3.X;
-            normal.Y = barycentricCoords.X * triangle.n1.Y + barycentricCoords.Y * triangle.n2.Y + barycentricCoords.Z * triangle.n3.Y;
-            normal.Z = barycentricCoords.X * triangle.n1.Z + barycentricCoords.Y * triangle.n2.Z + barycentricCoords.Z * triangle.n3.Z;
+            normal.X = barycentricCoords.X * triangle.N1.X+ barycentricCoords.Y * triangle.N2.X + barycentricCoords.Z * triangle.N3.X;
+            normal.Y = barycentricCoords.X * triangle.N1.Y + barycentricCoords.Y * triangle.N2.Y + barycentricCoords.Z * triangle.N3.Y;
+            normal.Z = barycentricCoords.X * triangle.N1.Z + barycentricCoords.Y * triangle.N2.Z + barycentricCoords.Z * triangle.N3.Z;
             return Vector4.Normalize(normal);
         }
 
@@ -70,9 +70,9 @@ namespace Models
         {
 
             Vector4 point = new Vector4();
-            point.X = barycentricCoords.X * triangle.p1.X + barycentricCoords.Y * triangle.p2.X + barycentricCoords.Z * triangle.p3.X;
-            point.Y = barycentricCoords.X * triangle.p1.Y + barycentricCoords.Y * triangle.p2.Y + barycentricCoords.Z * triangle.p3.Y;
-            point.Z = barycentricCoords.X * triangle.p1.Z + barycentricCoords.Y * triangle.p2.Z + barycentricCoords.Z * triangle.p3.Z;
+            point.X = barycentricCoords.X * triangle.P1.X + barycentricCoords.Y * triangle.P2.X + barycentricCoords.Z * triangle.P3.X;
+            point.Y = barycentricCoords.X * triangle.P1.Y + barycentricCoords.Y * triangle.P2.Y + barycentricCoords.Z * triangle.P3.Y;
+            point.Z = barycentricCoords.X * triangle.P1.Z + barycentricCoords.Y * triangle.P2.Z + barycentricCoords.Z * triangle.P3.Z;
             return point;
         }
 
@@ -156,60 +156,62 @@ namespace Models
 
                 // AET update
                 AET = AET.OrderBy(node => node.X).ToList();
-                for (int i = 0; i < AET.Count - 1; i += 2)
+                var aet = AET;
+                Parallel.For(0, AET.Count - 1,i =>
                 {
+                    i *= 2;
                     var y1 = y;
-                    Parallel.For((int)Math.Round(AET[i].X), (int)Math.Round(AET[i + 1].X), j =>
+                    Parallel.For((int)Math.Round(aet[i].X), (int)Math.Round(aet[i + 1].X), j =>
                     {
-                        if (j < DirectBitmap.Width && j >= 0 && (y1 - 1) < DirectBitmap.Height && (y1 - 1) >= 0)
+
+                        Vector3 barycentricCoords = CalculateBarycentric(j, y1 - 1, triangle);
+
+                        float zp = CountZCoord(barycentricCoords, triangle);
+
+                        if (zp <= _zBuffer[j, y1 - 1])
                         {
-                            Vector3 barycentricCoords = CalculateBarycentric(j, y1 - 1, triangle);
-
-
-                            float zp = CountZCoord(barycentricCoords, triangle);
-
-                            if (zp <= _zBuffer[j, y1 - 1])
-                            {
-                                Vector4 normal = Vector4.Zero;
-                                Vector4 point = Vector4.Zero; ;
-                                Vector4 IO = Vector4.One;
-                                if (Shaders.Settings.IsPhong == true)
-                                {
-                                    normal = CalculateNormal(barycentricCoords, triangle);
-                                    point = CalculatePoint(barycentricCoords, triangle);
-                                    IO = triangle.Vertices[0].Color;;
-                                }
-
-                               
-                                if (Shaders.Settings.IsGouraud == true)
-                                {
-                                    IO = CalculateColor(barycentricCoords, triangle);
-                                }
-
-                                arguments[j,y-1] = new ShadingArguments(camera, point, normal, IO);
-
-                                _zBuffer[j, y1 - 1] = zp;
-
-                                if (j <= minX)
-                                    minX = j;
-                                if( j >= maxX)
-                                    maxX = j;
-                                if (y-1 <= minY)
-                                    minY = y-1;
-                                if (y-1 >= maxY)
-                                    maxY = y-1;
-
-                            }
-
+                            triangle = PrepareForFilling(triangle, camera, j, y, y1, barycentricCoords, zp);
                         }
                     });
-                }
-                // ToDo: Przerzucić wyżej
+                });
+
                 foreach (var t in AET)
                 {
                     t.X += t.iM;
                 }
             }
+        }
+
+        private FilledTriangle PrepareForFilling(FilledTriangle triangle, Camera camera, int j, int y, int y1, Vector3 barycentricCoords, float zp)
+        {
+            Vector4 normal = Vector4.Zero;
+            Vector4 point = Vector4.Zero;
+            ;
+            Vector4 IO = Vector4.One;
+            if (Shaders.Settings.IsPhong == true)
+            {
+                normal = CalculateNormal(barycentricCoords, triangle);
+                point = CalculatePoint(barycentricCoords, triangle);
+                IO = triangle.Vertices[0].Color;
+            }
+            else
+            {
+                IO = CalculateColor(barycentricCoords, triangle);
+            }
+
+            arguments[j, y - 1] = new ShadingArguments(camera, point, normal, IO);
+
+            _zBuffer[j, y1 - 1] = zp;
+
+            if (j <= minX)
+                minX = j;
+            if (j >= maxX)
+                maxX = j;
+            if (y - 1 <= minY)
+                minY = y - 1;
+            if (y - 1 >= maxY)
+                maxY = y - 1;
+            return triangle;
         }
 
         public void FinalFill()

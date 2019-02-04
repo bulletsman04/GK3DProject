@@ -39,7 +39,6 @@ namespace Models
             _scene = new Scene(settings);
             Settings = settings;
             Shaders.Settings = settings;
-            //RepaintScene();
             StartScene();
         }
 
@@ -65,7 +64,6 @@ namespace Models
                     _locked = true;
                     _scene.Camera.UpdateCamera();
                     Parallel.ForEach(_scene.WorldObjects, sceneWorldObject => { sceneWorldObject.Update(); });
-
                     RepaintScene();
                     _bitmapManager.RaiseBitmapChanged();
                     _locked = false;
@@ -79,15 +77,12 @@ namespace Models
             _bitmapManager.MainBitmap = new DirectBitmap(_vPWidth, _vPHeight);
             _myGraphics.DirectBitmap = _bitmapManager.MainBitmap;
             _myGraphics.Clear();
-            using (Graphics g = Graphics.FromImage(_bitmapManager.MainBitmap.Bitmap))
-            {
+
                 foreach (WorldObject worldObject in _scene.WorldObjects)
                 {
 
-
-                    Parallel.ForEach(worldObject.LocalObject.Mesh.Triangles, triangle =>
+                Parallel.ForEach(worldObject.LocalObject.Mesh.Triangles, triangle =>
                     {
-
                         FilledTriangle filledtriangle = new FilledTriangle();
                         Vector4 p1 = worldObject.LocalObject.Mesh.Vertices[triangle.A].Point;
                         Vector4 p2 = worldObject.LocalObject.Mesh.Vertices[triangle.B].Point;
@@ -100,10 +95,7 @@ namespace Models
                         Vector4 vshader3 = vectorShader(p3, worldObject.LocalObject.Mesh.Vertices[triangle.C].Normal,
                             worldObject.ModelMatrix, out Vector4 p3M, out Vector4 n3M);
 
-
-                        Vector3 view = new Vector3(p1M.X, p1M.Y, p1M.Z) - _scene.Camera.CPos;
-                        Vector4 nAverage = (n1M + n2M + n3M) / 3;
-                        var cosNView = nAverage.X * view.X + nAverage.Y * view.Y + nAverage.Z * view.Z;
+                        float cosNView = CalculateBackFaceCulling(p1M, n1M, n2M, n3M);
 
                         if (cosNView >= 0)
                             return;
@@ -142,54 +134,46 @@ namespace Models
                         filledtriangle.ZA = vshader1.Z / vshader1.W;
                         filledtriangle.ZB = vshader2.Z / vshader2.W;
                         filledtriangle.ZC = vshader3.Z / vshader3.W;
-                        filledtriangle.n1 = n1M;
-                        filledtriangle.n2 = n2M;
-                        filledtriangle.n3 = n3M;
-                        filledtriangle.p1 = p1M;
-                        filledtriangle.p2 = p2M;
-                        filledtriangle.p3 = p3M;
+                        filledtriangle.N1 = n1M;
+                        filledtriangle.N2 = n2M;
+                        filledtriangle.N3 = n3M;
+                        filledtriangle.P1 = p1M;
+                        filledtriangle.P2 = p2M;
+                        filledtriangle.P3 = p3M;
                         filledtriangle.Color = triangle.Color;
 
                         if (Settings.IsGouraud)
                         {
-                            filledtriangle.Vertices.Add(new Vertex((int) p1ex, (int) p1ey,
+                            filledtriangle.Vertices.Add(new Vertex((int)p1ex, (int)p1ey,
                                 Shaders.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color)));
-                            filledtriangle.Vertices.Add(new Vertex((int) p2ex, (int) p2ey,
+                            filledtriangle.Vertices.Add(new Vertex((int)p2ex, (int)p2ey,
                                 Shaders.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color)));
-                            filledtriangle.Vertices.Add(new Vertex((int) p3ex, (int) p3ey,
+                            filledtriangle.Vertices.Add(new Vertex((int)p3ex, (int)p3ey,
                                 Shaders.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color)));
                         }
                         else if (Settings.IsPhong)
                         {
 
-                            filledtriangle.Vertices.Add(new Vertex((int) p1ex, (int) p1ey, triangle.Color));
-                            filledtriangle.Vertices.Add(new Vertex((int) p2ex, (int) p2ey, triangle.Color));
-                            filledtriangle.Vertices.Add(new Vertex((int) p3ex, (int) p3ey, triangle.Color));
+                            filledtriangle.Vertices.Add(new Vertex((int)p1ex, (int)p1ey, triangle.Color));
+                            filledtriangle.Vertices.Add(new Vertex((int)p2ex, (int)p2ey, triangle.Color));
+                            filledtriangle.Vertices.Add(new Vertex((int)p3ex, (int)p3ey, triangle.Color));
                         }
 
 
                         _myGraphics.FillPolygon(filledtriangle, _scene.Camera);
 
-
-                        //Vector4 vshader4 = vectorShader(p3 + worldObject.LocalObject.Mesh.Vertices[triangle.C].Normal, worldObject.LocalObject.Mesh.Vertices[triangle.C].Normal,
-                        //    worldObject.ModelMatrix, out Vector4 p4M, out Vector4 n4M);
-                        //var v4x = vshader4.X / vshader4.W;
-                        //var v4y = vshader4.Y / vshader4.W;
-                        //float p4ex = (v4x + 1) * _vPWidth / 2;
-                        //float p4ey = ((v4y + 1) * _vPHeight / 2);
-                        //g.DrawLine(new Pen(Color.Red), p3ex, p3ey, p4ex, p4ey);
-                        //g.DrawLine(new Pen(Color.Blue), p1ex, p1ey, p2ex, p2ey);
-                        //g.DrawLine(new Pen(Color.Blue), p1ex, p1ey, p3ex, p3ey);
-                        //g.DrawLine(new Pen(Color.Blue), p2ex, p2ey, p3ex, p3ey);
-
-
-
                     });
 
                 }
-
                 _myGraphics.FinalFill();
             }
+
+        private float CalculateBackFaceCulling(Vector4 p1M, Vector4 n1M, Vector4 n2M, Vector4 n3M)
+        {
+            Vector3 view = new Vector3(p1M.X - _scene.Camera.CPos.X, p1M.Y - _scene.Camera.CPos.Y, p1M.Z - _scene.Camera.CPos.Z);
+            Vector4 nAverage = (n1M + n2M + n3M) / 3;
+            var cosNView = nAverage.X * view.X + nAverage.Y * view.Y + nAverage.Z * view.Z;
+            return cosNView;
         }
 
 
