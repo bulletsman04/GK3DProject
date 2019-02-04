@@ -46,5 +46,6 @@ namespace Models
         {
             return vector / vector.Length();
         }
+        
     }
 }

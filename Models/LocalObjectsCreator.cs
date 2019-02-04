@@ -11,32 +11,73 @@ namespace Models
 {
     public static class LocalObjectsCreator
     {
-        //public static LocalObject CreateCone(string name,float width2, float height2)
-        //{
-        //    Mesh coneMesh = new Mesh()
-        //    {
-        //        Name = name,
-        //        Vertices = new[]
-        //        {
-        //           new Vector4(-width2, -width2, height2, 1),
-        //            new Vector4(-width2, width2, height2, 1),
-        //            new Vector4(width2, -width2, height2, 1),
-        //            new Vector4(width2, width2, height2, 1),
-        //            new Vector4( 0, 0, -height2, 1)
-        //        },
-        //        Triangles = new[]
-        //        {
-        //            new Triangle(0,2,1),
-        //            new Triangle(1,2,3),
-        //            new Triangle(4,2,3),
-        //            new Triangle(4,3,1),
-        //            new Triangle(4,1,0),
-        //            new Triangle(4,0,2)
-        //        }
-        //    };
+        public static LocalObject CreateCone(string name, float width2, float height2)
+        {
 
-        //    return new LocalObject(coneMesh);
-        //}
+            Vector4 p1 = new Vector4(-width2, -width2, height2, 1);
+            Vector4 p2 = new Vector4(-width2, width2, height2, 1);
+            Vector4 p3 = new Vector4(width2, -width2, height2, 1);
+            Vector4 p4 = new Vector4(width2, width2, height2, 1);
+            Vector4 p5 = new Vector4(0, 0, -height2, 1);
+
+          
+            Vector4 n1 = new Vector4(0,0,1,0);
+            Vector3 cross2 = -Vector3.Cross(new Vector3(p4.X, p4.Y, p4.Z) - new Vector3(p5.X, p5.Y, p5.Z), new Vector3(p2.X, p2.Y, p2.Z) -  new Vector3(p4.X, p4.Y, p4.Z));
+            Vector4 n2 = Vector4.Normalize(new Vector4(cross2.X,cross2.Y,cross2.Z,0));
+            Vector3 cross3 = -Vector3.Cross(new Vector3(p2.X, p2.Y, p2.Z) - new Vector3(p5.X, p5.Y, p5.Z), new Vector3(p1.X, p1.Y, p1.Z) - new Vector3(p2.X, p2.Y, p2.Z) );
+            Vector4 n3 = Vector4.Normalize(new Vector4(cross3.X, cross3.Y, cross3.Z, 0));
+            Vector3 cross4 = -Vector3.Cross(new Vector3(p1.X, p1.Y, p1.Z) -  new Vector3(p5.X, p5.Y, p5.Z) , new Vector3(p3.X, p3.Y, p3.Z) - new Vector3(p1.X, p1.Y, p1.Z) );
+            Vector4 n4 = Vector4.Normalize(new Vector4(cross4.X, cross4.Y, cross4.Z, 0));
+            Vector3 cross5 = -Vector3.Cross(new Vector3(p3.X, p3.Y, p3.Z) - new Vector3(p5.X, p5.Y, p5.Z), new Vector3(p4.X, p4.Y, p4.Z) - new Vector3(p3.X, p3.Y, p3.Z));
+            Vector4 n5 =Vector4.Normalize(new Vector4(cross5.X, cross5.Y, cross5.Z, 0));
+
+
+            Mesh coneMesh = new Mesh()
+            {
+                Name = name,
+                Vertices = new[]
+                {
+                    // 1
+                    new NVertex(  p1,n1 ),
+                    new NVertex( p1,n3),
+                    new NVertex( p1,n4 ),
+                    // 2
+                    new NVertex(  p2,n1 ),
+                    new NVertex( p2,n2),
+                    new NVertex( p2,n3 ), 
+                    // 4
+                    new NVertex(  p4,n1 ),
+                    new NVertex( p4,n5),
+                    new NVertex( p4,n2 ),              
+                    
+                    // 3
+                    new NVertex(  p3,n1 ),
+                    new NVertex( p3,n5),
+                    new NVertex( p3,n4 ),   
+                    
+                    
+                    
+                    // 5
+                    new NVertex(  p5,n2 ),
+                    new NVertex( p5,n3),
+                    new NVertex( p5,n4 ),
+                    new NVertex( p5,n5 )
+
+
+                },
+                Triangles = new[]
+                {
+                    new Triangle(0,3,6),
+                    new Triangle(0,9,6),
+                    new Triangle(4,8,12),
+                    new Triangle(5,1,13),
+                    new Triangle(2,11,14),
+                    new Triangle(10,7,15)
+                }
+            };
+
+            return new LocalObject(coneMesh);
+        }
 
         public static LocalObject CreateCube(string name, float width2)
         {
@@ -112,11 +153,9 @@ namespace Models
 
         public static LocalObject CreateCuboid(string name, float width2, float height2, float depth2)
         {
-            Mesh cuboidMesh = new Mesh()
-            {
-                Name = name,
-               Vertices = new[]
-                {
+
+            float step = 0.5f;
+            List<NVertex> vertices = new List<NVertex>() {
                     // 1
                    new NVertex(  new Vector4(-height2, -width2, depth2, 1),new Vector4(0,0,1,0) ),
                     new NVertex(  new Vector4(-height2, -width2, depth2, 1),new Vector4(-1,0,0,0) ),
@@ -156,27 +195,89 @@ namespace Models
                     new NVertex(  new Vector4(height2, width2, -depth2, 1),new Vector4(1,0,0,0) ),
                     new NVertex(  new Vector4(height2, width2, -depth2, 1),new Vector4(0,1,0,0) )
 
-                },
-                Triangles = new[]
-                {
-                    new Triangle(0,3,6),
-                    new Triangle(3,9,6),
+                };
+            List<Triangle> triangles = new List<Triangle>()    {
+                new Triangle(0,3,6),
+                new Triangle(3,9,6),
 
-                    new Triangle(2,17,5),
-                    new Triangle(14,17,2),
+                new Triangle(2,17,5),
+                new Triangle(14,17,2),
 
-                    new Triangle(16,4,10),
-                    new Triangle(10,22,16),
+                new Triangle(16,4,10),
+                new Triangle(10,22,16),
 
-                    new Triangle(20,23,11),
-                    new Triangle(11,8,20),
+                new Triangle(20,23,11),
+                new Triangle(11,8,20),
 
-                    new Triangle(13,19,7),
-                    new Triangle(7,1,13),
+                new Triangle(13,19,7),
+                new Triangle(7,1,13),
+                new Triangle(21,18,12),
+                new Triangle(12,15,21)
+            };
 
-                    new Triangle(21,15,12),
-                    new Triangle(12,18,21)
-                }
+
+            //vertices.Add(new NVertex(new Vector4(height2, width2 - step, -depth2, 1), new Vector4(0, 0, -1, 0)));
+            //vertices.Add(new NVertex(new Vector4(-height2, width2 - step, -depth2, 1), new Vector4(0, 0, -1, 0)));
+            //triangles.Add(new Triangle(21, 18, 24));
+            //triangles.Add(new Triangle(18, 24, 25));
+            //verticesCount += 2;
+
+            //int trianglesNum = (int)(height2 / step);
+            //float tempWidth = width2;
+            //var tempHeight = height2;
+            //for (int i = 0; i <= trianglesNum; i++)
+            //{
+            //    vertices.Add(new NVertex(new Vector4(tempHeight, tempWidth, -depth2, 1), new Vector4(0, 0, -1, 0)));
+            //    tempHeight -= step;
+            //    verticesCount++;
+            //    if (tempHeight <= -height2)
+            //    {
+            //        tempHeight = -height2;
+            //    }
+            //}
+
+            //tempWidth -= step;
+            //bool widthStop = false;
+            //while (tempWidth >= -width2)
+            //{
+            //    tempHeight = height2;
+            //    vertices.Add(new NVertex(new Vector4(tempHeight, tempWidth, -depth2, 1), new Vector4(0, 0, -1, 0)));
+            //    verticesCount++;
+            //    bool heightStop = false;
+            //    while (tempHeight >= -height2)
+            //    {
+            //        vertices.Add(new NVertex(new Vector4(tempHeight -= step, tempWidth, -depth2, 1), new Vector4(0, 0, -1, 0)));
+            //        verticesCount++;
+            //        triangles.Add(new Triangle(verticesCount - trianglesNum - 2, verticesCount - trianglesNum - 1, verticesCount - 1));
+            //        triangles.Add(new Triangle(verticesCount - 1, verticesCount, verticesCount - trianglesNum - 1));
+            //        tempHeight -= step;
+            //        if (heightStop)
+            //            break;
+            //        if (tempHeight <= -height2)
+            //        {
+            //            tempHeight = -height2;
+            //            heightStop = true;
+            //        }
+
+            //    }
+            //    if(widthStop)
+            //        break;
+            //    tempWidth -= step;
+            //    if (tempWidth <= -width2)
+            //    {
+            //        tempWidth = -width2;
+            //        widthStop = true;
+            //    }
+
+            //}
+
+
+            Mesh cuboidMesh = new Mesh()
+            {
+                Name = name,
+               Vertices = vertices.ToArray(),
+              Triangles = triangles.ToArray()
+            
             };
 
             return new LocalObject(cuboidMesh);

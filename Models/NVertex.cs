@@ -16,6 +16,7 @@ namespace Models
         {
             Point = point;
             Normal = normal;
+                
         }
     }
 }

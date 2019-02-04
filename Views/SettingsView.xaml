@@ -105,6 +105,12 @@
                         <Slider Minimum="10" Maximum="100" TickFrequency="1" Value="{Binding Settings.MPhong}" Width="80"></Slider>
                         <TextBlock  FontSize="10" > 100</TextBlock>
                     </WrapPanel>
+                    <WrapPanel Style="{StaticResource WrapStyle}">
+                        <TextBlock Margin="3 0 0 0" >Ambient =</TextBlock>
+                        <TextBlock Margin="10 0 0 0" FontSize="10"> 0</TextBlock>
+                        <Slider Minimum="0" Maximum="0.05" TickFrequency="0.005" Value="{Binding Settings.Ambient}" Width="80"></Slider>
+                        <TextBlock  FontSize="10" > 0.3</TextBlock>
+                    </WrapPanel>
                 </StackPanel>
             </Border>
             <Border Style="{StaticResource BorderStyle}"  Grid.Row="3">

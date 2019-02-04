@@ -18,6 +18,7 @@ namespace Models
         private bool _isMoving = false;
 
         private float _lambertRate = 1f;
+        private float _ambient = 0f;
         private float _phongRate = 0.2f;
         private int _mPhong = 50;
         private float _dayFactor = 1;
@@ -28,7 +29,8 @@ namespace Models
         {
             Lights = new List<LightBase>()
             {
-                new PointLight(new Vector4(3f,3f,-3f,0),new Vector4(1,1,1,0))
+                new PointLight(new Vector4(-3f,3f,-3f,0),new Vector4(1,1,1,0)),
+                new PointLight(new Vector4(-3f,-3f,-3f,0),new Vector4(1,1,1,0))
             };
         }
 
@@ -119,6 +121,16 @@ namespace Models
             {
                 _dayFactor = value;
                 RaisePropertyChanged("DayFactor");
+            }
+        }
+
+        public float Ambient
+        {
+            get { return _ambient; }
+            set
+            {
+                _ambient = value;
+                RaisePropertyChanged("Ambient");
             }
         }
     }
