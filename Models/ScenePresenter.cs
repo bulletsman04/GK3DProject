@@ -168,7 +168,7 @@ namespace Models
                     
                 }
             }
-          
+            _myGraphics.FinalFill();
         }
 
 

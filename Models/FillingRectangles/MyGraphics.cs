@@ -19,13 +19,16 @@ namespace Models
     {
 
         private float[,] _zBuffer;
-        private float[,] _zBufferModel;
+        private ShadingArguments[,] arguments;
+        private int minX, minY, maxX, maxY = 0;
         public DirectBitmap DirectBitmap { get; set; }
 
         public MyGraphics(DirectBitmap directBitmap)
         {
             DirectBitmap = directBitmap;
-            _zBufferModel = new float[directBitmap.Width, directBitmap.Height];
+            _zBuffer = new float[directBitmap.Width, directBitmap.Height];
+            arguments = new ShadingArguments[directBitmap.Width, directBitmap.Height];
+
             InitializeZBuffer();
         }
 
@@ -35,23 +38,21 @@ namespace Models
             {
                 Parallel.For(0, DirectBitmap.Height, j =>
                 {
-                    _zBufferModel[i, j] = float.PositiveInfinity;
+                    _zBuffer[i, j] = float.PositiveInfinity;
+                    arguments[i, j] = new ShadingArguments(null,Vector4.Zero, Vector4.Zero, Vector4.Zero );
                 });
             });
-            _zBuffer = (float[,])_zBufferModel.Clone();
+
         }
 
         public void ClearZBuffer()
         {
-            _zBuffer = (float[,])_zBufferModel.Clone();
+            minX = minY = maxX=  maxY = 0;
         }
 
         private float CountZCoord(Vector3 barycentricCoords, FilledTriangle triangle)
         {
-          
-
             float z = barycentricCoords.X * triangle.ZA + barycentricCoords.Y * triangle.ZB + barycentricCoords.Z * triangle.ZC;
-
             return z;
         }
 
@@ -167,7 +168,7 @@ namespace Models
 
                             float zp = CountZCoord(barycentricCoords, triangle);
 
-                            if (zp < _zBuffer[j, y1 - 1])
+                            if (zp <= _zBuffer[j, y1 - 1])
                             {
                                 Vector4 normal = Vector4.Zero;
                                 Vector4 point = Vector4.Zero; ;
@@ -185,12 +186,19 @@ namespace Models
                                     IO = CalculateColor(barycentricCoords, triangle);
                                 }
 
-
-                                Color finalColor = Shaders.FragmentShader(camera, point, normal, IO);
-
-                                DirectBitmap.SetPixel(j, y1 - 1, finalColor);
+                                arguments[j,y-1] = new ShadingArguments(camera, point, normal, IO);
 
                                 _zBuffer[j, y1 - 1] = zp;
+
+                                if (j < minX)
+                                    minX = j;
+                                if( j > maxX)
+                                    maxX = j;
+                                if (y-1 < minY)
+                                    minY = y-1;
+                                if (y-1 > maxY)
+                                    maxY = y-1;
+
                             }
 
                         }
@@ -202,6 +210,26 @@ namespace Models
                     t.X += t.iM;
                 }
             }
+        }
+
+        public void FinalFill()
+        {
+            Parallel.For(minX, maxX, i =>
+            {
+                Parallel.For(minY, maxY, j =>
+                {
+                    ShadingArguments shadingArguments = arguments[i, j];
+                    if (shadingArguments.Camera != null)
+                    {
+                        Color finalColor = Shaders.FragmentShader(shadingArguments.Camera, shadingArguments.Point,
+                            shadingArguments.Normal, shadingArguments.IO);
+
+                        DirectBitmap.SetPixel(i, j, finalColor);
+                        arguments[i, j] = new ShadingArguments(null,Vector4.Zero, Vector4.Zero, Vector4.Zero);
+                        _zBuffer[i, j] = float.PositiveInfinity;
+                    }
+                });
+            });
         }
 
         private void CheckNeighbour(List<Node> AET, int i, Vertex Pi, int iNext, Vertex PiNext)

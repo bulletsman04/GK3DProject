@@ -31,11 +31,10 @@ namespace Models
         public static Vector4 CalculatePhong(Camera camera, Vector4 point, Vector4 normal, Vector4 IO)
         {
             Vector4 result = new Vector4();
-            Vector4 nLight;
             Vector4 lightColor = Vector4.One;
             foreach (var light in Settings.Lights)
             {
-                nLight = Vector4.Normalize(light.LightPosition - point);
+                var nLight = Vector4.Normalize(light.LightPosition - point);
                 if (light is PointLight)
                 {
                     lightColor = light.LigthColor*Settings.DayFactor;
@@ -44,11 +43,11 @@ namespace Models
                 {
                     int factor = 15;
                     float cosDL = (float)Math.Pow(Math.Max(-spotLight.DVector.X * nLight.X + -spotLight.DVector.Y * nLight.Y +
-                                  -spotLight.DVector.Z * nLight.Z,0),factor);
+                                  -spotLight.DVector.Z * nLight.Z, 0), factor);
                     lightColor = spotLight.LigthColor * cosDL;
                 }
 
-               
+
                 float cosVR = 0;
                 
                 Vector4 V = Vector4.Normalize(new Vector4(camera.CPos.X - point.X, camera.CPos.Y - point.Y, (camera.CPos.Z - point.Z), 0));
