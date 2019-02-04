@@ -101,30 +101,7 @@ namespace Models
 
             return  new Vector3(xA,xB,xC);
         }
-
-        //private Vector3 CalculateBarycentricInModel(int x, int y, FilledTriangle triangle)
-        //{
-
-        //    var d = new Vector3(x, y, 1);
-
-        //    var a = new Vector3(triangle.p1.X, triangle.p1.X, 1);
-        //    var b = new Vector3(triangle.p1.X, triangle.p1.X, 1);
-        //    var c = new Vector3(triangle.p1.X, triangle.p1.X, 1);
-        //    Matrix3x3 A = Matrix3x3.CreateFromColumns(a, b, c);
-
-
-        //    var w = A.Determinant;
-        //    var wx = Matrix3x3.CreateFromColumns(d, b, c).Determinant;
-        //    var wy = Matrix3x3.CreateFromColumns(a, d, c).Determinant;
-        //    var wz = Matrix3x3.CreateFromColumns(a, b, d).Determinant;
-
-        //    var xA = wx / w;
-        //    var xB = wy / w;
-        //    var xC = wz / w;
-
-        //    return new Vector3(xA, xB, xC);
-        //}
-
+        
         // ToDo: Zmienić na strukturę
         private class Node
         {

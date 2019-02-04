@@ -114,11 +114,6 @@ namespace Models
         }
         private static void CreateShootObjects(List<WorldObject> worldObjects)
         {
-            Random r = new Random();
-            var colors = new Color[9]
-            {
-                Color.Purple, Color.Green, Color.Orange, Color.Brown, Color.Blue,Color.Gold,Color.AliceBlue,Color.CornflowerBlue, Color.DarkBlue
-            };
 
             //sphere1
             float radius = 0.3f;
@@ -131,26 +126,40 @@ namespace Models
                 0, 0, 1, zOffset,
                 0, 0, 0, 1
             );
-
-            //Matrix4x4 sphere1Model = new Matrix4x4(
-            //    1, 0, 0, 0f,
-            //    0, 1, 0, 0,
-            //    0, 0, 1, 0,
-            //    0, 0, 0, 1
-            //);
-
+            
             WorldObject sphere1W = new WorldObject(sphere1, sphere1Model);
             sphere1W.Translation = new Vector3(0,-2f,zOffset);
 
             foreach (var meshTriangle in sphere1W.LocalObject.Mesh.Triangles)
             {
-
-                //meshTriangle.Color = colors[r.Next(9)];
                 meshTriangle.Color = new Vector4(0, 0, 1, 0);
             }
 
             ShootBall = sphere1W;
             worldObjects.Add(sphere1W);
+
+            //cylinder
+            float cylinderRadius = 0.3f;
+            float height = 0.6f;
+
+            LocalObject cylinder = LocalObjectsCreator.CreateCylinder("cylinder", cylinderRadius,height);
+            float zCylinderOffset = -(0.3f + 0.8f + 0.6f);
+
+            Matrix4x4 cylinderModel = new Matrix4x4(
+                1, 0, 0, 1.5f,
+                0, 1, 0, -2f,
+                0, 0, 1, zCylinderOffset,
+                0, 0, 0, 1
+            );
+
+            WorldObject cylinderW = new WorldObject(cylinder, cylinderModel);
+
+            foreach (var meshTriangle in cylinderW.LocalObject.Mesh.Triangles)
+            {
+                meshTriangle.Color = new Vector4(0, 0, 1, 0);
+            }
+            
+            worldObjects.Add(cylinderW);
 
             ////// cone1
             //LocalObject cone1 = LocalObjectsCreator.CreateCone("cone1",0.3f,0.4f);

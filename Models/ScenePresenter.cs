@@ -49,7 +49,7 @@ namespace Models
 
         private void SetTimer()
         {
-            _timer = new Timer(50);
+            _timer = new Timer(30);
             _timer.Elapsed += OnTimedEvent;
             _timer.AutoReset = true;
             _timer.Enabled = true;
@@ -63,10 +63,7 @@ namespace Models
                 {
                     _locked = true;
                     _scene.Camera.UpdateCamera();
-                    foreach (var sceneWorldObject in _scene.WorldObjects)
-                    {
-                        sceneWorldObject.Update();
-                    }
+                    Parallel.ForEach(_scene.WorldObjects, sceneWorldObject => { sceneWorldObject.Update(); });
 
                     RepaintScene();
                     _bitmapManager.RaiseBitmapChanged();
