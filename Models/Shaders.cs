@@ -60,12 +60,14 @@ namespace Models
 
                 float cosLN = Math.Max(normal.X * nLight.X + normal.Y * nLight.Y + normal.Z * nLight.Z, 0);
                 float R = lightColor.X * (Settings.LambertRate * IO.X * cosLN + Settings.PhongRate * cosVR);
-                float G = lightColor.Y * (Settings.LambertRate * IO.Y * cosLN + Settings.PhongRate * cosVR);
+                float G =  lightColor.Y * (Settings.LambertRate * IO.Y * cosLN + Settings.PhongRate * cosVR);
                 float B = lightColor.Z * (Settings.LambertRate * IO.Z * cosLN + Settings.PhongRate * cosVR);
 
                 result += new Vector4(R, G, B, 0);
 
             }
+
+            result += new Vector4(Settings.Ambient, Settings.Ambient, Settings.Ambient,0);
 
             if (result.X < 0) result.X = 0;
             if (result.X > 1) result.X = 1;
