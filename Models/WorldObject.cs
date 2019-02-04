@@ -22,6 +22,9 @@ namespace Models
         public Vector3 Translation { get; set; }
         public Camera MovingCamera { get; set; }
         public Camera ObservingCamera { get; set; }
+        public SpotLight Light1 { get; set; }
+        public SpotLight Light2 { get; set; }
+
         public ObjectType Type { get; set; }
 
         public bool IsMovingCameraSet { get; set; } = false;
@@ -36,6 +39,8 @@ namespace Models
             ModelMatrix = modelMatrix;
             Rotation = Translation = Vector3.Zero;
             Type = ObjectType.Static;
+            Light1 = new SpotLight(Vector4.One, new Vector4(0,1,1,0),Vector4.One );
+            Light2 = new SpotLight(Vector4.One, new Vector4(1, 0, 1, 0), Vector4.One);
 
 
         }
@@ -103,6 +108,11 @@ namespace Models
             {
                 ObservingCamera.CTarget = Translation;
             }
+
+            Light1.LightPosition = new Vector4(Translation.X,Translation.Y,Translation.Z,0);
+            Light1.DVector = (new Vector4(Translation.X, Translation.Y - 1f, Translation.Z, 0) - Light1.LightPosition).Normalize();
+            Light2.LightPosition = new Vector4(Translation.X, Translation.Y, Translation.Z, 0);
+            Light2.DVector = (new Vector4(Translation.X, Translation.Y + 1f, Translation.Z, 0) - Light1.LightPosition).Normalize();
         }
 
         

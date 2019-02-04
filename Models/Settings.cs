@@ -20,15 +20,13 @@ namespace Models
         private float _lambertRate = 1f;
         private float _phongRate = 0.2f;
         private int _mPhong = 50;
-        public List<Vector4> Lights { get; set; }
+        public List<LightBase> Lights { get; set; }
 
         public Settings()
         {
-            Lights = new List<Vector4>()
+            Lights = new List<LightBase>()
             {
-                new Vector4(3f,3f,-3f,0),
-                new Vector4(-3f,-3f,-3f,0),
-
+                new PointLight(new Vector4(3f,3f,-3f,0),new Vector4(1,1,1,0))
             };
         }
 

@@ -41,5 +41,10 @@ namespace Models
         {
             return new Vector4(matrix.M11, matrix.M21, matrix.M31, matrix.M41);
         }
+
+        public static Vector4 Normalize(this Vector4 vector)
+        {
+            return vector / vector.Length();
+        }
     }
 }

@@ -32,12 +32,25 @@ namespace Models
         {
             Vector4 result = new Vector4();
             Vector4 nLight;
-            Vector4 ligthColor = new Vector4(1, 1, 1, 0);
+            Vector4 lightColor = Vector4.One;
             foreach (var light in Settings.Lights)
             {
-                nLight = Vector4.Normalize(new Vector4(light.X - point.X, light.Y - point.Y, (light.Z - point.Z), 0));
-                float cosVR = 0;
+                nLight = Vector4.Normalize(light.LightPosition - point);
+                if (light is PointLight)
+                {
+                    lightColor = light.LigthColor;
+                }
+                else if (light is SpotLight spotLight)
+                {
+                    int factor = 5;
+                    float cosDL = (float)Math.Pow(Math.Max(-spotLight.DVector.X * nLight.X + -spotLight.DVector.Y * nLight.Y +
+                                  -spotLight.DVector.Z * nLight.Z,0),factor);
+                    lightColor = spotLight.LigthColor * cosDL;
+                }
 
+               
+                float cosVR = 0;
+                
                 Vector4 V = Vector4.Normalize(new Vector4(camera.CPos.X - point.X, camera.CPos.Y - point.Y, (camera.CPos.Z - point.Z), 0));
 
                 Vector4 RV = Vector4.Normalize(2 * (normal.X * nLight.X + normal.Y * nLight.Y + normal.Z * nLight.Z) * normal - nLight);
@@ -46,9 +59,9 @@ namespace Models
              
 
                 float cosLN = Math.Max(normal.X * nLight.X + normal.Y * nLight.Y + normal.Z * nLight.Z, 0);
-                float R = ligthColor.X * (Settings.LambertRate * IO.X * cosLN + Settings.PhongRate * cosVR);
-                float G = ligthColor.Y * (Settings.LambertRate * IO.Y * cosLN + Settings.PhongRate * cosVR);
-                float B = ligthColor.Z * (Settings.LambertRate * IO.Z * cosLN + Settings.PhongRate * cosVR);
+                float R = lightColor.X * (Settings.LambertRate * IO.X * cosLN + Settings.PhongRate * cosVR);
+                float G = lightColor.Y * (Settings.LambertRate * IO.Y * cosLN + Settings.PhongRate * cosVR);
+                float B = lightColor.Z * (Settings.LambertRate * IO.Z * cosLN + Settings.PhongRate * cosVR);
 
                 result += new Vector4(R, G, B, 0);
 

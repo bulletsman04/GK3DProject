@@ -42,6 +42,9 @@ namespace Models
                 if (worldObject.MovingCamera != null)
                 {
                     MovingObject = worldObject;
+                    Settings.Lights.Add(MovingObject.Light1);
+                    Settings.Lights.Add(MovingObject.Light2);
+
                     return;
                     
                 }
