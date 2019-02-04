@@ -13,9 +13,7 @@ namespace Models
         public Vector3 CTarget { get; set; }
         public Vector3 CPos { get; set; }
         public Vector3 CUp { get; set; }
-        // ToDo: Should be there ?
         public Matrix4x4 ViewMatrix { get; set; }
-        private float _alpha = 0;
         public Camera(Vector3 cTarget, Vector3 cPos, Vector3 cUp)
         {
             CTarget = cTarget;
@@ -47,13 +45,10 @@ namespace Models
             Matrix4x4.Invert(ViewMatrix,out var invertedViewMatrix);
             ViewMatrix = invertedViewMatrix;
         }
-
-        public Action UpdatePosition { get; set; }
+        
 
         public void UpdateCamera()
         {
-            //_alpha += (float)(1 * Math.PI / 180);
-            //CPos = new Vector3((float)(0 + 7* Math.Cos(_alpha)), (float)(0 + 7* Math.Sin(_alpha)),-3f);
             CalculateViewMatrix();
         }
     }

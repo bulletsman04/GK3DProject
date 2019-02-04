@@ -14,8 +14,7 @@ namespace Models
         public WorldObject MovingObject { get; set; }
         public Camera Camera { get; set; }
         public Camera StaticCamera { get; set; }
-
-        public List<Vector4> LightCources;
+        
         public Settings Settings { get; set; }
         public PropertyObserver<Settings> SettingsObserver { get; set; }
 
@@ -24,14 +23,11 @@ namespace Models
             Settings = settings;
             WorldObjects = WorldObjectsCreator.Create();
             FindMovingObject();
-            StaticCamera = new Camera(new Vector3( 0f,0, 0 ),
-                //ToDo: problem with 0,0,-10
-                //new Vector3(0f,-1f, -1.5f), - cant see sphere on that
+            StaticCamera = new Camera(
+                new Vector3( 0f,0, 0 ),
                 new Vector3(5f,1f, -4f),
                 new Vector3(0f, 0f, 1f));
             Camera = StaticCamera;
-            LightCources = new List<Vector4>();
-            LightCources.Add(new Vector4(0,0,4f,0));
             RegisterPropertiesChanged();
         }
 
@@ -44,9 +40,7 @@ namespace Models
                     MovingObject = worldObject;
                     Settings.Lights.Add(MovingObject.Light1);
                     Settings.Lights.Add(MovingObject.Light2);
-
                     return;
-                    
                 }
             }
         }

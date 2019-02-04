@@ -12,11 +12,9 @@ namespace Models
     {
         private bool _isPhong = true;
         private bool _isGouraud = false;
-
         private bool _isStatic = true;
         private bool _isObserving = false;
         private bool _isMoving = false;
-
         private float _lambertRate = 1f;
         private float _ambient = 0f;
         private float _phongRate = 0.2f;
