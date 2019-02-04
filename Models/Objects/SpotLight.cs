@@ -12,7 +12,7 @@ namespace Models
         public Vector4 DVector { get; set; }
         public SpotLight(Vector4 lightPosition, Vector4 ligthColor,Vector4 spotPoint) : base(lightPosition, ligthColor)
         {
-            DVector = (spotPoint - lightPosition).Normalize();
+            DVector = Vector4.Normalize(spotPoint - lightPosition);
         }
     }
 }

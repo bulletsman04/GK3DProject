@@ -78,7 +78,7 @@ namespace Models
             _bitmapManager.MainBitmap.Dispose();
             _bitmapManager.MainBitmap = new DirectBitmap(_vPWidth, _vPHeight);
             _myGraphics.DirectBitmap = _bitmapManager.MainBitmap;
-            _myGraphics.ClearZBuffer();
+            _myGraphics.Clear();
             using (Graphics g = Graphics.FromImage(_bitmapManager.MainBitmap.Bitmap))
             {
                 foreach (WorldObject worldObject in _scene.WorldObjects)

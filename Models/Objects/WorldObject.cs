@@ -110,9 +110,9 @@ namespace Models
             }
 
             Light1.LightPosition = new Vector4(Translation.X,Translation.Y,Translation.Z,0);
-            Light1.DVector = (new Vector4(Translation.X, Translation.Y - 1f, Translation.Z, 0) - Light1.LightPosition).Normalize();
+            Light1.DVector = Vector4.Normalize(new Vector4(Translation.X, Translation.Y - 1f, Translation.Z, 0) - Light1.LightPosition);
             Light2.LightPosition = new Vector4(Translation.X, Translation.Y, Translation.Z, 0);
-            Light2.DVector = (new Vector4(Translation.X, Translation.Y + 1f, Translation.Z, 0) - Light1.LightPosition).Normalize();
+            Light2.DVector = Vector4.Normalize(new Vector4(Translation.X, Translation.Y + 1f, Translation.Z, 0) - Light1.LightPosition);
         }
 
         

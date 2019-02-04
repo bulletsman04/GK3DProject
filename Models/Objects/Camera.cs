@@ -19,7 +19,6 @@ namespace Models
             CTarget = cTarget;
             CPos = cPos;
             CUp = cUp;
-          // UpdateCamera();
             CalculateViewMatrix();
         }
 

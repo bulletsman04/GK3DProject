@@ -45,7 +45,7 @@ namespace Models
 
         }
 
-        public void ClearZBuffer()
+        public void Clear()
         {
             minX = minY = maxX=  maxY = 0;
         }
