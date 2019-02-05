@@ -40,7 +40,7 @@ namespace Models
             CreateProjectionMatrix();
             _scene = new Scene(settings);
             Settings = settings;
-            Shaders.Settings = settings;
+            Shader.Settings = settings;
 
             RegisterPropertiesChanged();
             StartScene();
@@ -48,12 +48,12 @@ namespace Models
         private void RegisterPropertiesChanged()
         {
             SettingsObserver = new PropertyObserver<Settings>(Settings)
-                .RegisterHandler(n => n.Width, StaticCameraHandler);
+                .RegisterHandler(n => n.Width, BitmapSizeChangedHandler);
         }
 
-        private void StaticCameraHandler(Settings s)
-        {_timer.Stop();
-         
+        private void BitmapSizeChangedHandler(Settings s)
+        {
+            _timer.Stop();
             _vPHeight = Settings.Height;
             _vPWidth = Settings.Width;
             CreateProjectionMatrix();
@@ -61,6 +61,7 @@ namespace Models
             _bitmapManager.MainBitmap.Dispose();
             _bitmapManager.MainBitmap = new DirectBitmap(_vPWidth, _vPHeight);
             _myGraphics.DirectBitmap = _bitmapManager.MainBitmap;
+            _myGraphics.SetMinMaxBorder();
             _timer.Start();
         }
         public void StartScene()
@@ -72,7 +73,6 @@ namespace Models
         {
             _timer = new Timer(30);
             _timer.Elapsed += OnTimedEvent;
-            _timer.AutoReset = true;
             _timer.Enabled = true;
         }
 
@@ -101,91 +101,117 @@ namespace Models
                 {
 
                 Parallel.ForEach(worldObject.LocalObject.Mesh.Triangles, triangle =>
-                    {
-                        FilledTriangle filledtriangle = new FilledTriangle();
-                        Vector4 p1 = worldObject.LocalObject.Mesh.Vertices[triangle.A].Point;
-                        Vector4 p2 = worldObject.LocalObject.Mesh.Vertices[triangle.B].Point;
-                        Vector4 p3 = worldObject.LocalObject.Mesh.Vertices[triangle.C].Point;
+                {
+                    FilledTriangle filledtriangle = new FilledTriangle();
 
-                        Vector4 vshader1 = vectorShader(p1, worldObject.LocalObject.Mesh.Vertices[triangle.A].Normal,
-                            worldObject.ModelMatrix, out Vector4 p1M, out Vector4 n1M);
-                        Vector4 vshader2 = vectorShader(p2, worldObject.LocalObject.Mesh.Vertices[triangle.B].Normal,
-                            worldObject.ModelMatrix, out Vector4 p2M, out Vector4 n2M);
-                        Vector4 vshader3 = vectorShader(p3, worldObject.LocalObject.Mesh.Vertices[triangle.C].Normal,
-                            worldObject.ModelMatrix, out Vector4 p3M, out Vector4 n3M);
+                    // Vertex shading
+                    Vector4 vshader1 = VectorShader(worldObject.LocalObject.Mesh.Vertices[triangle.A],
+                        worldObject.ModelMatrix, out Vector4 p1M, out Vector4 n1M);
+                    Vector4 vshader2 = VectorShader(worldObject.LocalObject.Mesh.Vertices[triangle.B],
+                        worldObject.ModelMatrix, out Vector4 p2M, out Vector4 n2M);
+                    Vector4 vshader3 = VectorShader(worldObject.LocalObject.Mesh.Vertices[triangle.C],
+                        worldObject.ModelMatrix, out Vector4 p3M, out Vector4 n3M);
 
-                        float cosNView = CalculateBackFaceCulling(p1M, n1M, n2M, n3M);
+             
+                    // Back face culling
+                    float cosNView = CalculateBackFaceCulling(p1M, n1M, n2M, n3M);
 
-                        if (cosNView >= 0)
-                            return;
+                    if (cosNView >= 0)
+                        return;
 
+                    // Normalized vertices in Projection
+                    Vector4 pV1 = CaclulateNormalizedProjectionVertex(vshader1);
+                    Vector4 pV2 = CaclulateNormalizedProjectionVertex(vshader2);
+                    Vector4 pV3 = CaclulateNormalizedProjectionVertex(vshader3);
 
-                        var v1x = vshader1.X / vshader1.W;
-                        var v1y = vshader1.Y / vshader1.W;
-                        var v1z = vshader1.Z / vshader1.W;
-                        var v2x = vshader2.X / vshader2.W;
-                        var v2y = vshader2.Y / vshader2.W;
-                        var v2z = vshader2.Z / vshader2.W;
-                        var v3x = vshader3.X / vshader3.W;
-                        var v3y = vshader3.Y / vshader3.W;
-                        var v3z = vshader3.Z / vshader3.W;
-
-                        if (!isInCube(v1x, v1y, v1z) || !isInCube(v2x, v2y, v2z) || !isInCube(v3x, v3y, v3z))
-                            return;
+                    // Cutting to cube
+                    if (!isInCube(pV1) || !isInCube(pV2) || !isInCube(pV3))
+                        return;
 
 
-                        float p1ex = (v1x + 1) * _vPWidth / 2;
-                        float p1ey = ((v1y + 1) * _vPHeight / 2);
-                        float p2ex = ((v2x + 1) * _vPWidth / 2);
-                        float p2ey = ((v2y + 1) * _vPHeight / 2);
-                        float p3ex = ((v3x + 1) * _vPWidth / 2);
-                        float p3ey = ((v3y + 1) * _vPHeight / 2);
+                    // Vertices in World Space used to calculate colors
+                    filledtriangle.Mv1 = new NVertex(p1M, n1M);
+                    filledtriangle.Mv2 = new NVertex(p2M, n2M);
+                    filledtriangle.Mv3 = new NVertex(p3M, n3M);
 
 
-                        filledtriangle.Vertices = new List<Vertex>();
-                        Accord.Math.Vector3 a = new Accord.Math.Vector3(p1ex, p1ey, 1);
-                        Accord.Math.Vector3 b = new Accord.Math.Vector3(p2ex, p2ey, 1);
-                        Accord.Math.Vector3 c = new Accord.Math.Vector3(p3ex, p3ey, 1);
-                        filledtriangle.A = Matrix3x3.CreateFromColumns(a, b, c);
-                        filledtriangle.VA = a;
-                        filledtriangle.VB = b;
-                        filledtriangle.VC = c;
-                        filledtriangle.ZA = vshader1.Z / vshader1.W;
-                        filledtriangle.ZB = vshader2.Z / vshader2.W;
-                        filledtriangle.ZC = vshader3.Z / vshader3.W;
-                        filledtriangle.N1 = n1M;
-                        filledtriangle.N2 = n2M;
-                        filledtriangle.N3 = n3M;
-                        filledtriangle.P1 = p1M;
-                        filledtriangle.P2 = p2M;
-                        filledtriangle.P3 = p3M;
-                        filledtriangle.Color = triangle.Color;
+                    Vector4 color1, color2, color3;
+                    GetVerticesColors(triangle, p1M, n1M, out color1, out color2, out color3);
 
-                        if (Settings.IsGouraud)
-                        {
-                            filledtriangle.Vertices.Add(new Vertex((int)p1ex, (int)p1ey,
-                                Shaders.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color)));
-                            filledtriangle.Vertices.Add(new Vertex((int)p2ex, (int)p2ey,
-                                Shaders.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color)));
-                            filledtriangle.Vertices.Add(new Vertex((int)p3ex, (int)p3ey,
-                                Shaders.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color)));
-                        }
-                        else
-                        {
-
-                            filledtriangle.Vertices.Add(new Vertex((int)p1ex, (int)p1ey, triangle.Color));
-                            filledtriangle.Vertices.Add(new Vertex((int)p2ex, (int)p2ey, triangle.Color));
-                            filledtriangle.Vertices.Add(new Vertex((int)p3ex, (int)p3ey, triangle.Color));
-                        }
+                    // Certices ready to be drawn
+                    Vertex viewV1 = CaclulateVieportVertex(pV1, color1);
+                    Vertex viewV2 = CaclulateVieportVertex(pV2, color2);
+                    Vertex viewV3 = CaclulateVieportVertex(pV3, color3);
 
 
-                        _myGraphics.FillPolygon(filledtriangle, _scene.Camera);
+                    filledtriangle.Vertices = new List<Vertex> {viewV1, viewV2, viewV3};
 
-                    });
+                    filledtriangle = PrepareBarycentricMatrix(filledtriangle, viewV1, viewV2, viewV3);
+
+                    _myGraphics.FillPolygon(filledtriangle, _scene.Camera);
+
+                });
 
                 }
                 _myGraphics.FinalFill();
             }
+
+        private Vector4 VectorShader(NVertex vertex, Matrix4x4 modelMatrix, out Vector4 pM,
+            out Vector4 nM)
+        {
+            Matrix4x4 modelVertex = modelMatrix.Multiply(vertex.Point);
+
+            Matrix4x4 result = ProjectionMatrix * _scene.Camera.ViewMatrix * modelVertex;
+
+            pM = MathNetHelper.Matrix4X4ToVector4(modelVertex);
+            nM = MathNetHelper.Matrix4X4ToVector4(modelMatrix.Multiply(vertex.Normal));
+
+            return MathNetHelper.Matrix4X4ToVector4(result);
+        }
+
+        private void GetVerticesColors(Triangle triangle, Vector4 p1M, Vector4 n1M, out Vector4 color1, out Vector4 color2, out Vector4 color3)
+        {
+            if (Settings.IsGouraud)
+            {
+                color1 = Shader.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color);
+                color2 = Shader.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color);
+                color3 = Shader.CalculatePhong(_scene.Camera, p1M, n1M, triangle.Color);
+            }
+            else
+            {
+                color1 = color2 = color3 = triangle.Color;
+            }
+        }
+
+        private static FilledTriangle PrepareBarycentricMatrix(FilledTriangle filledtriangle, Vertex viewV1, Vertex viewV2, Vertex viewV3)
+        {
+            Accord.Math.Vector3 a = new Accord.Math.Vector3(viewV1.X, viewV1.Y, 1);
+            Accord.Math.Vector3 b = new Accord.Math.Vector3(viewV2.X, viewV2.Y, 1);
+            Accord.Math.Vector3 c = new Accord.Math.Vector3(viewV3.X, viewV3.Y, 1);
+            filledtriangle.A = Matrix3x3.CreateFromColumns(a, b, c);
+            filledtriangle.VA = a;
+            filledtriangle.VB = b;
+            filledtriangle.VC = c;
+            return filledtriangle;
+        }
+
+        private Vertex CaclulateVieportVertex(Vector4 normalizedPVertex, Vector4 color)
+        {
+            int x = (int)((normalizedPVertex.X+ 1) * _vPWidth / 2);
+            int y = (int)((normalizedPVertex.Y + 1) * _vPHeight / 2);
+            
+            return  new Vertex(x,y,normalizedPVertex.Z,color);
+        }
+
+        private Vector4 CaclulateNormalizedProjectionVertex(Vector4 vshader)
+        {
+            var x = vshader.X / vshader.W;
+            var y = vshader.Y / vshader.W;
+            var z = vshader.Z / vshader.W;
+            Vector4 pV1 = new Vector4(x, y, z, 0);
+
+            return pV1;
+        }
 
         private float CalculateBackFaceCulling(Vector4 p1M, Vector4 n1M, Vector4 n2M, Vector4 n3M)
         {
@@ -196,28 +222,11 @@ namespace Models
         }
 
 
-        private bool isInCube(float x, float y,float z)
+        private bool isInCube(Vector4 vertex)
         {
-            if (x < -1 || x > 1 || y < -1 || y > 1 || z < -1 || z > 1)
-            {
-                return false;
-            }
-
-            return true;
+            return !(vertex.X < -1) && !(vertex.X > 1) && !(vertex.Y < -1) && !(vertex.Y > 1) && !(vertex.Z < -1) && !(vertex.Z > 1);
         }
-
-        private Vector4 vectorShader(Vector4 point, Vector4 normal, Matrix4x4 modelMatrix,  out Vector4 pM,
-            out Vector4 nM)
-        {
-            Matrix4x4 modelVertex = modelMatrix.Multiply(point);
-
-            Matrix4x4 result = ProjectionMatrix * _scene.Camera.ViewMatrix * modelVertex;
-
-            pM = MathNetHelper.Matrix4X4ToVector4(modelVertex);
-            nM = MathNetHelper.Matrix4X4ToVector4(modelMatrix.Multiply(normal));
-
-            return MathNetHelper.Matrix4X4ToVector4(result);
-        }
+        
 
         private void CreateProjectionMatrix()
         {

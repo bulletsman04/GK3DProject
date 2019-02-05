@@ -12,21 +12,14 @@ namespace Models.FillingRectangles
     public struct FilledTriangle
     {
         public List<Vertex> Vertices { get; set; }
-        public Vector4 P1 { get; set; }
-        public Vector4 P2 { get; set; }
-        public Vector4 P3 { get; set; }
-        public Vector4 N1 { get; set; }
-        public Vector4 N2 { get; set; }
-        public Vector4 N3 { get; set; }
+        public NVertex Mv1 { get; set; }
+        public NVertex Mv2 { get; set; }
+        public NVertex Mv3 { get; set; }
 
         public Matrix3x3 A { get; set; }
-        public float ZA { get; set; }
-        public float ZB { get; set; }
-        public float ZC { get; set; }
         public Vector3 VA { get; set; }
         public Vector3 VB { get; set; }
         public Vector3 VC { get; set; }
-        public Vector4 Color { get; set; }
 
 
 

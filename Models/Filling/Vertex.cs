@@ -12,12 +12,14 @@ namespace Models.FillingRectangles
     {
         public int X { get; set; }
         public int Y { get; set; }
+        public float Z { get; set; }
         public Vector4 Color { get; set; }
 
-        public Vertex(int x, int y, Vector4 color)
+        public Vertex(int x, int y,float z, Vector4 color)
         {
             X = x;
             Y = y;
+            Z = z;
             Color = color;
         }
 

@@ -57,9 +57,16 @@ namespace Models
             minX = minY = maxX=  maxY = 0;
         }
 
+        public void SetMinMaxBorder()
+        {
+            minX = minY = 0;
+            maxX = DirectBitmap.Width-1;
+            maxY = DirectBitmap.Height-1;
+        }
+
         private float CountZCoord(Vector3 barycentricCoords, FilledTriangle triangle)
         {
-            float z = barycentricCoords.X * triangle.ZA + barycentricCoords.Y * triangle.ZB + barycentricCoords.Z * triangle.ZC;
+            float z = barycentricCoords.X * triangle.Vertices[0].Z + barycentricCoords.Y * triangle.Vertices[1].Z + barycentricCoords.Z * triangle.Vertices[2].Z;
             return z;
         }
 
@@ -67,9 +74,9 @@ namespace Models
         {
 
             Vector4 normal = new Vector4();
-            normal.X = barycentricCoords.X * triangle.N1.X+ barycentricCoords.Y * triangle.N2.X + barycentricCoords.Z * triangle.N3.X;
-            normal.Y = barycentricCoords.X * triangle.N1.Y + barycentricCoords.Y * triangle.N2.Y + barycentricCoords.Z * triangle.N3.Y;
-            normal.Z = barycentricCoords.X * triangle.N1.Z + barycentricCoords.Y * triangle.N2.Z + barycentricCoords.Z * triangle.N3.Z;
+            normal.X = barycentricCoords.X * triangle.Mv1.Normal.X+ barycentricCoords.Y * triangle.Mv2.Normal.X + barycentricCoords.Z * triangle.Mv3.Normal.X;
+            normal.Y = barycentricCoords.X * triangle.Mv1.Normal.Y + barycentricCoords.Y * triangle.Mv2.Normal.Y + barycentricCoords.Z * triangle.Mv3.Normal.Y;
+            normal.Z = barycentricCoords.X * triangle.Mv1.Normal.Z + barycentricCoords.Y * triangle.Mv3.Normal.Z + barycentricCoords.Z * triangle.Mv3.Normal.Z;
             return Vector4.Normalize(normal);
         }
 
@@ -77,9 +84,9 @@ namespace Models
         {
 
             Vector4 point = new Vector4();
-            point.X = barycentricCoords.X * triangle.P1.X + barycentricCoords.Y * triangle.P2.X + barycentricCoords.Z * triangle.P3.X;
-            point.Y = barycentricCoords.X * triangle.P1.Y + barycentricCoords.Y * triangle.P2.Y + barycentricCoords.Z * triangle.P3.Y;
-            point.Z = barycentricCoords.X * triangle.P1.Z + barycentricCoords.Y * triangle.P2.Z + barycentricCoords.Z * triangle.P3.Z;
+            point.X = barycentricCoords.X * triangle.Mv1.Point.X + barycentricCoords.Y * triangle.Mv2.Point.X + barycentricCoords.Z * triangle.Mv3.Point.X;
+            point.Y = barycentricCoords.X * triangle.Mv1.Point.Y + barycentricCoords.Y * triangle.Mv2.Point.Y + barycentricCoords.Z * triangle.Mv3.Point.Y;
+            point.Z = barycentricCoords.X * triangle.Mv1.Point.Z + barycentricCoords.Y * triangle.Mv2.Point.Z + barycentricCoords.Z * triangle.Mv3.Point.Z;
             return point;
         }
 
@@ -195,7 +202,7 @@ namespace Models
             Vector4 point = Vector4.Zero;
             ;
             Vector4 IO = Vector4.One;
-            if (Shaders.Settings.IsPhong == true)
+            if (Shader.Settings.IsPhong == true)
             {
                 normal = CalculateNormal(barycentricCoords, triangle);
                 point = CalculatePoint(barycentricCoords, triangle);
@@ -230,7 +237,7 @@ namespace Models
                       ShadingArguments shadingArguments = arguments[i, j];
                       if (shadingArguments.Camera != null)
                       {
-                          Color finalColor = Shaders.FragmentShader(shadingArguments.Camera, shadingArguments.Point,
+                          Color finalColor = Shader.FragmentShader(shadingArguments.Camera, shadingArguments.Point,
                               shadingArguments.Normal, shadingArguments.IO);
 
                           DirectBitmap.SetPixel(i, j, finalColor);

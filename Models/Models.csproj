@@ -83,7 +83,7 @@
     <Compile Include="Scene\Scene.cs" />
     <Compile Include="Scene\ScenePresenter.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Filling\Shaders.cs" />
+    <Compile Include="Filling\FragmentShader.cs" />
     <Compile Include="Objects\SpotLight.cs" />
     <Compile Include="Mesh\Triangle.cs" />
     <Compile Include="Helpers\TypesConverters.cs" />
