@@ -46,6 +46,14 @@ namespace Models
 
         public void Clear()
         {
+            Parallel.For(minX, maxX + 1, i =>
+            {
+                Parallel.For(minY, maxY + 1, j =>
+                {
+                        DirectBitmap.SetPixel(i,j,Color.Black);
+                    
+                });
+            });
             minX = minY = maxX=  maxY = 0;
         }
 
@@ -215,23 +223,23 @@ namespace Models
 
         public void FinalFill()
         {
-            Parallel.For(minX, maxX+1, i =>
-            {
-                Parallel.For(minY, maxY+1, j =>
-                {
-                    ShadingArguments shadingArguments = arguments[i, j];
-                    if (shadingArguments.Camera != null)
-                    {
-                        Color finalColor = Shaders.FragmentShader(shadingArguments.Camera, shadingArguments.Point,
-                            shadingArguments.Normal, shadingArguments.IO);
+            Parallel.For(minX, maxX + 1, i =>
+              {
+                  Parallel.For(minY, maxY + 1, j =>
+                  {
+                      ShadingArguments shadingArguments = arguments[i, j];
+                      if (shadingArguments.Camera != null)
+                      {
+                          Color finalColor = Shaders.FragmentShader(shadingArguments.Camera, shadingArguments.Point,
+                              shadingArguments.Normal, shadingArguments.IO);
 
-                        DirectBitmap.SetPixel(i, j, finalColor);
-                        arguments[i, j] = new ShadingArguments(null,Vector4.Zero, Vector4.Zero, Vector4.Zero);
-                        _zBuffer[i, j] = float.PositiveInfinity;
-                    }
-                });
-            });
-            
+                          DirectBitmap.SetPixel(i, j, finalColor);
+                          arguments[i, j] = new ShadingArguments(null, Vector4.Zero, Vector4.Zero, Vector4.Zero);
+                          _zBuffer[i, j] = float.PositiveInfinity;
+                      }
+                  });
+              });
+
         }
 
         private void CheckNeighbour(List<Node> AET, int i, Vertex Pi, int iNext, Vertex PiNext)

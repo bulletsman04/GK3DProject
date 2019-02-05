@@ -49,8 +49,6 @@ namespace Models
         {
             SettingsObserver = new PropertyObserver<Settings>(Settings)
                 .RegisterHandler(n => n.Width, StaticCameraHandler);
-           
-
         }
 
         private void StaticCameraHandler(Settings s)
@@ -60,6 +58,9 @@ namespace Models
             _vPWidth = Settings.Width;
             CreateProjectionMatrix();
             _myGraphics.InitializeZBuffer(_vPWidth,_vPHeight);
+            _bitmapManager.MainBitmap.Dispose();
+            _bitmapManager.MainBitmap = new DirectBitmap(_vPWidth, _vPHeight);
+            _myGraphics.DirectBitmap = _bitmapManager.MainBitmap;
             _timer.Start();
         }
         public void StartScene()
@@ -93,9 +94,7 @@ namespace Models
 
         private void RepaintScene()
         {
-            _bitmapManager.MainBitmap.Dispose();
-            _bitmapManager.MainBitmap = new DirectBitmap(_vPWidth, _vPHeight);
-            _myGraphics.DirectBitmap = _bitmapManager.MainBitmap;
+           
             _myGraphics.Clear();
 
                 foreach (WorldObject worldObject in _scene.WorldObjects)
