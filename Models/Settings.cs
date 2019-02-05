@@ -17,11 +17,13 @@ namespace Models
         private bool _isMoving = false;
         private float _lambertRate = 1f;
         private float _ambient = 0f;
-        private float _phongRate = 0.2f;
+        private float _phongRate = 0.5f;
         private int _mPhong = 50;
+        private int _nSpot = 15;
+
         private float _dayFactor = 1;
-        private int _width = 500;
-        private int _height = 500;
+        private int _width = 550;
+        private int _height = 550;
 
         public List<LightBase> Lights { get; set; }
 
@@ -148,6 +150,16 @@ namespace Models
         {
             get { return _height; }
             set { _height = value; }
+        }
+
+        public int NSpot
+        {
+            get { return _nSpot; }
+            set
+            {
+                _nSpot = value;
+                RaisePropertyChanged("NSpot");
+            }
         }
     }
 }

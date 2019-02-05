@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GK3DProject"
     xmlns:view="clr-namespace:Views;assembly=Views"
     mc:Ignorable="d"
-    Title="GKLab3" Width="700" Height="500" WindowStartupLocation="CenterScreen"  WindowStyle="None" ResizeMode="NoResize">
+    Title="GKLab3" Width="650" Height="480" WindowStartupLocation="CenterScreen"  WindowStyle="None" ResizeMode="NoResize">
     <WindowChrome.WindowChrome>
         <WindowChrome 
             CaptionHeight="0"

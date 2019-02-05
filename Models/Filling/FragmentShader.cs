@@ -68,8 +68,8 @@ namespace Models
             Vector4 lightColor;
             if (light is SpotLight spotLight)
             {
-                int factor = 15;
-                float cosDL = (float)Math.Pow(Math.Max(Vector4.Dot(-spotLight.DVector,nLight), 0), factor);
+               
+                float cosDL = (float)Math.Pow(Math.Max(Vector4.Dot(-spotLight.DVector,nLight), 0), Settings.NSpot);
                 lightColor = spotLight.LigthColor * cosDL;
             }
             else

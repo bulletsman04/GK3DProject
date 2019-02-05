@@ -39,8 +39,8 @@ namespace Models
             ModelMatrix = modelMatrix;
             Rotation = Translation = Vector3.Zero;
             Type = ObjectType.Static;
-            Light1 = new SpotLight(Vector4.One, new Vector4(1,1,1,0),Vector4.One );
-            Light2 = new SpotLight(Vector4.One, new Vector4(1, 1, 1, 0), Vector4.One);
+            Light1 = new SpotLight(Vector4.One, TypesConverters.VectorColorFromRGB(255,255,0),Vector4.One );
+            Light2 = new SpotLight(Vector4.One, TypesConverters.VectorColorFromRGB(255, 0, 0), Vector4.One);
 
 
         }

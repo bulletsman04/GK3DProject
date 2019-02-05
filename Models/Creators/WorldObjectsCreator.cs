@@ -32,7 +32,7 @@ namespace Models
             foreach (var meshTriangle in cuboid1W.LocalObject.Mesh.Triangles)
             {
 
-                meshTriangle.Color = new Vector4(1,0,0,0);
+                meshTriangle.Color = TypesConverters.VectorColorFromRGB(23, 104, 23);
 
             }
 
@@ -58,7 +58,7 @@ namespace Models
             foreach (var meshTriangle in cube1W.LocalObject.Mesh.Triangles)
             {
 
-                meshTriangle.Color = new Vector4(0,1,0,0);
+                meshTriangle.Color = TypesConverters.VectorColorFromRGB(127, 127, 127);
 
             }
 
@@ -81,7 +81,7 @@ namespace Models
             foreach (var meshTriangle in cube2W.LocalObject.Mesh.Triangles)
             {
 
-                meshTriangle.Color = new Vector4(1,1,0,0);
+                meshTriangle.Color = TypesConverters.VectorColorFromRGB(127, 127, 127);
 
             }
 
@@ -104,7 +104,7 @@ namespace Models
             foreach (var meshTriangle in cube3W.LocalObject.Mesh.Triangles)
             {
 
-                meshTriangle.Color = new Vector4(1,1,1,0);
+                meshTriangle.Color = TypesConverters.VectorColorFromRGB(127, 127, 127);
 
             }
 
@@ -130,7 +130,7 @@ namespace Models
 
             foreach (var meshTriangle in sphere1W.LocalObject.Mesh.Triangles)
             {
-                meshTriangle.Color = new Vector4(0, 0, 1, 0);
+                meshTriangle.Color = TypesConverters.VectorColorFromRGB(255, 255, 0);
             }
 
             ShootBall = sphere1W;
@@ -154,7 +154,7 @@ namespace Models
 
             foreach (var meshTriangle in cylinderW.LocalObject.Mesh.Triangles)
             {
-                meshTriangle.Color = new Vector4(0, 0, 1, 0);
+                meshTriangle.Color = TypesConverters.VectorColorFromRGB(0, 255, 0);
             }
 
             worldObjects.Add(cylinderW);
@@ -199,7 +199,7 @@ namespace Models
             foreach (var meshTriangle in baseTurretW.LocalObject.Mesh.Triangles)
             {
 
-                meshTriangle.Color = new Vector4(1, 1, 1, 0);
+                meshTriangle.Color = TypesConverters.VectorColorFromRGB(100,100,100);
 
             }
 
@@ -221,12 +221,12 @@ namespace Models
 
             WorldObject turretW = new WorldObject(turret, turretModel);
             turretW.Translation = new Vector3(0,3f,zTurretOffset);
-            turretW.Rotation = new Vector3(0, 0, (float)Math.PI / 5);
+            turretW.Rotation = new Vector3(0, 0, (float)Math.PI / 15);
             turretW.Type = ObjectType.Moving;
 
             foreach (var meshTriangle in turretW.LocalObject.Mesh.Triangles)
             {
-                meshTriangle.Color = new Vector4(1, 1, 1, 0);
+                meshTriangle.Color = TypesConverters.VectorColorFromRGB(255,255,255);
             }
 
 
@@ -247,7 +247,7 @@ namespace Models
 
             WorldObject barrelW = new WorldObject(barrel, barrelModel);
             barrelW.Translation = new Vector3(0,2.7f,zBarrelOffset);
-            barrelW.Rotation = new Vector3((float)Math.PI/2,0, (float)Math.PI / 5);
+            barrelW.Rotation = new Vector3((float)Math.PI / 2, 0, (float)Math.PI / 20);
             barrelW.Type = ObjectType.Moving;
 
 
@@ -346,7 +346,7 @@ namespace Models
             int colorCounter = 0;
             foreach (var meshTriangle in bulletW.LocalObject.Mesh.Triangles)
             {
-                meshTriangle.Color = colorCounter <= bulletW.LocalObject.Mesh.Triangles.Length / 2 ? new Vector4(1,1, 0, 0) : new Vector4(0, 1, 1, 0);
+                meshTriangle.Color = colorCounter <= bulletW.LocalObject.Mesh.Triangles.Length / 2 ? TypesConverters.VectorColorFromRGB(196, 143, 5) : TypesConverters.VectorColorFromRGB(165, 102, 14);
 
                 colorCounter++;
             }
