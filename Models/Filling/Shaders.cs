@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public static class Shader
+    public static class Shaders
     {
         public static Settings Settings { get; set; }
-
         public static Color FragmentShader(Camera camera,Vector4 point, Vector4 normal, Vector4 IO)
         {
             var result = Settings.IsPhong == true ? CalculatePhong(camera, point, normal, IO) : IO;
