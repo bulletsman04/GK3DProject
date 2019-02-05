@@ -38,7 +38,7 @@ namespace Models
                 Parallel.For(0, height, j =>
                 {
                     _zBuffer[i, j] = float.PositiveInfinity;
-                    arguments[i, j] = new ShadingArguments(null,Vector4.Zero, Vector4.Zero, Vector4.Zero );
+                    arguments[i, j] = new ShadingArguments(null, new Vector3(0, 0, 0), new FilledTriangle());
                 });
             });
 
@@ -198,22 +198,9 @@ namespace Models
 
         private FilledTriangle PrepareForFilling(FilledTriangle triangle, Camera camera, int j, int y, int y1, Vector3 barycentricCoords, float zp)
         {
-            Vector4 normal = Vector4.Zero;
-            Vector4 point = Vector4.Zero;
-            ;
-            Vector4 IO = Vector4.One;
-            if (Shader.Settings.IsPhong == true)
-            {
-                normal = CalculateNormal(barycentricCoords, triangle);
-                point = CalculatePoint(barycentricCoords, triangle);
-                IO = triangle.Vertices[0].Color;
-            }
-            else
-            {
-                IO = CalculateColor(barycentricCoords, triangle);
-            }
+      
 
-            arguments[j, y - 1] = new ShadingArguments(camera, point, normal, IO);
+            arguments[j, y - 1] = new ShadingArguments(camera, barycentricCoords,triangle);
 
             _zBuffer[j, y1 - 1] = zp;
 
@@ -237,11 +224,28 @@ namespace Models
                       ShadingArguments shadingArguments = arguments[i, j];
                       if (shadingArguments.Camera != null)
                       {
-                          Color finalColor = Shader.FragmentShader(shadingArguments.Camera, shadingArguments.Point,
-                              shadingArguments.Normal, shadingArguments.IO);
+                          Vector3 barycentricCoords = shadingArguments.BarycentricCoords;
+                          FilledTriangle triangle = shadingArguments.Triangle;
+                          Vector4 normal = Vector4.Zero;
+                          Vector4 point = Vector4.Zero;
+                          ;
+                          Vector4 IO = Vector4.One;
+                          if (Shader.Settings.IsPhong == true)
+                          {
+                              normal = CalculateNormal(barycentricCoords, triangle);
+                              point = CalculatePoint(barycentricCoords, triangle);
+                              IO = triangle.Vertices[0].Color;
+                          }
+                          else
+                          {
+                              IO = CalculateColor(barycentricCoords, triangle);
+                          }
+
+                          Color finalColor = Shader.FragmentShader(shadingArguments.Camera, point,
+                              normal,IO);
 
                           DirectBitmap.SetPixel(i, j, finalColor);
-                          arguments[i, j] = new ShadingArguments(null, Vector4.Zero, Vector4.Zero, Vector4.Zero);
+                          arguments[i, j] = new ShadingArguments(null, new Vector3(0,0,0), new FilledTriangle());
                           _zBuffer[i, j] = float.PositiveInfinity;
                       }
                   });

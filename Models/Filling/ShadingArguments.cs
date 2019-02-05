@@ -9,18 +9,16 @@ namespace Models.FillingRectangles
 {
     public struct ShadingArguments
     {
-        public ShadingArguments(Camera camera, Vector4 point, Vector4 normal, Vector4 iO) : this()
+        public ShadingArguments(Camera camera, Accord.Math.Vector3 barycentricCoords, FilledTriangle triangle) : this()
         {
             Camera = camera;
-            Point = point;
-            Normal = normal;
-            IO = iO;
+            BarycentricCoords = barycentricCoords;
+            Triangle = triangle;
         }
 
         public Camera Camera { get; set; }
-        public Vector4 Point { get; set; }
-        public Vector4 Normal { get; set; }
-        public Vector4 IO { get; set; }
+        public Accord.Math.Vector3 BarycentricCoords { get; set; }
+        public FilledTriangle Triangle { get; set; }
 
         
     }

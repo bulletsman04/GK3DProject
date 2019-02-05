@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public static class Shaders
+    public static class Shader
     {
         public static Settings Settings { get; set; }
 

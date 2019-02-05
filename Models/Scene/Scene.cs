@@ -25,7 +25,7 @@ namespace Models
             FindMovingObject();
             StaticCamera = new Camera(
                 new Vector3( 0f,0, 0 ),
-                new Vector3(0f,-5f, -4f),
+                new Vector3(5f,1f, -4f),
                 new Vector3(0f, 0f, 1f));
             Camera = StaticCamera;
             RegisterPropertiesChanged();
