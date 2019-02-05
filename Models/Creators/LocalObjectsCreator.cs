@@ -55,8 +55,6 @@ namespace Models
                     new NVertex( p3,n5),
                     new NVertex( p3,n4 ),   
                     
-                    
-                    
                     // 5
                     new NVertex(  p5,n2 ),
                     new NVertex( p5,n3),
@@ -214,64 +212,7 @@ namespace Models
                 new Triangle(21,18,12),
                 new Triangle(12,15,21)
             };
-
-
-            //vertices.Add(new NVertex(new Vector4(height2, width2 - step, -depth2, 1), new Vector4(0, 0, -1, 0)));
-            //vertices.Add(new NVertex(new Vector4(-height2, width2 - step, -depth2, 1), new Vector4(0, 0, -1, 0)));
-            //triangles.Add(new Triangle(21, 18, 24));
-            //triangles.Add(new Triangle(18, 24, 25));
-            //verticesCount += 2;
-
-            //int trianglesNum = (int)(height2 / step);
-            //float tempWidth = width2;
-            //var tempHeight = height2;
-            //for (int i = 0; i <= trianglesNum; i++)
-            //{
-            //    vertices.Add(new NVertex(new Vector4(tempHeight, tempWidth, -depth2, 1), new Vector4(0, 0, -1, 0)));
-            //    tempHeight -= step;
-            //    verticesCount++;
-            //    if (tempHeight <= -height2)
-            //    {
-            //        tempHeight = -height2;
-            //    }
-            //}
-
-            //tempWidth -= step;
-            //bool widthStop = false;
-            //while (tempWidth >= -width2)
-            //{
-            //    tempHeight = height2;
-            //    vertices.Add(new NVertex(new Vector4(tempHeight, tempWidth, -depth2, 1), new Vector4(0, 0, -1, 0)));
-            //    verticesCount++;
-            //    bool heightStop = false;
-            //    while (tempHeight >= -height2)
-            //    {
-            //        vertices.Add(new NVertex(new Vector4(tempHeight -= step, tempWidth, -depth2, 1), new Vector4(0, 0, -1, 0)));
-            //        verticesCount++;
-            //        triangles.Add(new Triangle(verticesCount - trianglesNum - 2, verticesCount - trianglesNum - 1, verticesCount - 1));
-            //        triangles.Add(new Triangle(verticesCount - 1, verticesCount, verticesCount - trianglesNum - 1));
-            //        tempHeight -= step;
-            //        if (heightStop)
-            //            break;
-            //        if (tempHeight <= -height2)
-            //        {
-            //            tempHeight = -height2;
-            //            heightStop = true;
-            //        }
-
-            //    }
-            //    if(widthStop)
-            //        break;
-            //    tempWidth -= step;
-            //    if (tempWidth <= -width2)
-            //    {
-            //        tempWidth = -width2;
-            //        widthStop = true;
-            //    }
-
-            //}
-
-
+            
             Mesh cuboidMesh = new Mesh()
             {
                 Name = name,
@@ -293,8 +234,6 @@ namespace Models
             NVertex[] vertices = new NVertex[mn + 2];
             vertices[0] = new NVertex( new Vector4 (0, r, 0, 1 ),new Vector4(0,1,0,0));
             vertices[mn + 1] = new NVertex(new Vector4(0, -r, 0, 1), new Vector4(0, -1, 0, 0));
-            float maxz = 0;
-            float minz = int.MaxValue;
             // diff i=0...m-1
             for (int i = 0; i < m; i++)
             {
@@ -306,18 +245,7 @@ namespace Models
                     float y = (float)(r * Math.Cos((float)Math.PI * (i + 1) / (m + 1)));
                     float z = (float)(r * Math.Sin((float)(2 * Math.PI * (j - 1) / n)) * Math.Sin((float)Math.PI * (i + 1) / (m + 1)));
                     float w = 1f;
-
-                    if (z > maxz)
-                    {
-                        maxz = z;
-                    }
-
-                    if (z < minz)
-                    {
-                        minz = z;
-                    }
-
-
+                    
                     vertices[i * n + j] = new NVertex(new Vector4(x, y, -z, w), new Vector4(x/r, y/r, -z/r, 0)); 
                 }
             }
@@ -346,14 +274,7 @@ namespace Models
                 for (int j = 1; j <= n; j++)
                 {
 
-                    if (triangles[(2 * i + 1) * n + j - 1] != null)
-                    {
-                        ;
-                    }
-                    if (triangles[(2 * i + 2) * n + j - 1] != null)
-                    {
-                        ;
-                    }
+                   
                     if (j == n)
                     {
 

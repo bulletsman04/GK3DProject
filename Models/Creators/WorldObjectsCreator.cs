@@ -54,10 +54,7 @@ namespace Models
             );
 
             WorldObject cube1W = new WorldObject(cube1, cube1Model);
-
-            //cube1W.UpdateRotation = () => cube1W.Rotation = new Vector3(cube1W.Rotation.X, cube1W.Rotation.Y,
-            //    (float) (cube1W.Rotation.Z + 2 * Math.PI / 180));
-
+            
             foreach (var meshTriangle in cube1W.LocalObject.Mesh.Triangles)
             {
 
@@ -229,9 +226,7 @@ namespace Models
 
             foreach (var meshTriangle in turretW.LocalObject.Mesh.Triangles)
             {
-
                 meshTriangle.Color = new Vector4(1, 1, 1, 0);
-
             }
 
 
@@ -351,19 +346,9 @@ namespace Models
             int colorCounter = 0;
             foreach (var meshTriangle in bulletW.LocalObject.Mesh.Triangles)
             {
-                if (colorCounter <= bulletW.LocalObject.Mesh.Triangles.Length / 2)
-                {
-                    meshTriangle.Color = new Vector4(1,1, 0, 0);
-                }
-                else
-                {
-                    meshTriangle.Color = new Vector4(0, 1, 1, 0);
-
-                }
+                meshTriangle.Color = colorCounter <= bulletW.LocalObject.Mesh.Triangles.Length / 2 ? new Vector4(1,1, 0, 0) : new Vector4(0, 1, 1, 0);
 
                 colorCounter++;
-
-
             }
 
             worldObjects.Add(bulletW);

@@ -171,23 +171,24 @@ namespace Models
                 // AET update
                 AET = AET.OrderBy(node => node.X).ToList();
                 var aet = AET;
-                Parallel.For(0, AET.Count - 1,i =>
-                {
-                    i *= 2;
-                    var y1 = y;
-                    Parallel.For((int)Math.Round(aet[i].X), (int)Math.Round(aet[i + 1].X), j =>
-                    {
+                Parallel.For(0, AET.Count - 1, i =>
+                 {
+                     i *= 2;
+                     var y1 = y;
+                     Parallel.For((int)Math.Round(aet[i].X), (int)Math.Round(aet[i + 1].X), j =>
+                     {
 
-                        Vector3 barycentricCoords = CalculateBarycentric(j, y1 - 1, triangle);
+                         Vector3 barycentricCoords = CalculateBarycentric(j, y1 - 1, triangle);
 
-                        float zp = CountZCoord(barycentricCoords, triangle);
+                         float zp = CountZCoord(barycentricCoords, triangle);
 
-                        if (zp <= _zBuffer[j, y1 - 1])
-                        {
-                            triangle = PrepareForFilling(triangle, camera, j, y, y1, barycentricCoords, zp);
-                        }
-                    });
-                });
+                         if (zp <= _zBuffer[j, y1 - 1])
+                         {
+                             triangle = PrepareForFilling(triangle, camera, j, y, y1, barycentricCoords, zp);
+                         }
+                     });
+                 });
+
 
                 foreach (var t in AET)
                 {
