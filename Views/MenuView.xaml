@@ -44,6 +44,7 @@
 
         <Menu  Background="Transparent"  Grid.Column="0" Name="MainMenu">
             <MenuItem PreviewMouseDown="Documentation_OnPreviewMouseDown" Name="Documentation"  Style="{StaticResource MainMenuItem}"  Header="Dokumentacja"></MenuItem>
+            <MenuItem PreviewMouseDown="Demo_OnPreviewMouseDown" Name="Demo"  Style="{StaticResource MainMenuItem}"  Header="Demo"></MenuItem>
         </Menu>
         <WrapPanel Name="MovePanel" Style="{StaticResource TopBarDrag}" PreviewMouseDown="MenuView_OnMouseDown"  Grid.Column="1"></WrapPanel>
         <WrapPanel VerticalAlignment="Stretch" Grid.Column="2">

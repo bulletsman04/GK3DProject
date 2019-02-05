@@ -19,6 +19,8 @@ namespace ViewModels
         RelayCommand _closeCommand;
         RelayCommand _minimizeCommand;
         RelayCommand _documentationCommand;
+        RelayCommand _demoCommand;
+
 
         public bool shouldInvoke { get; set; } = true;
 
@@ -64,7 +66,7 @@ namespace ViewModels
                             try
                             {
                                 if (shouldInvoke)
-                                    Process.Start(@"..\..\..\Dokumentacja.txt");
+                                    Process.Start(@"..\..\..\dokumentacja_v2.docx");
                             }
                             catch (Exception e)
                             {
@@ -74,6 +76,30 @@ namespace ViewModels
                         null);
                 }
                 return _documentationCommand;
+            }
+        }
+
+        public ICommand DemoCommand
+        {
+            get
+            {
+                if (_demoCommand == null)
+                {
+                    _demoCommand = new RelayCommand(() =>
+                        {
+                            try
+                            {
+                                if (shouldInvoke)
+                                    Process.Start(@"..\..\..\demo.mp4");
+                            }
+                            catch (Exception e)
+                            {
+
+                            }
+                        },
+                        null);
+                }
+                return _demoCommand;
             }
         }
     }

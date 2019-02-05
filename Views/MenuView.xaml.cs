@@ -52,5 +52,10 @@ namespace Views
         {
             _menuViewModel.DocumentationCommand.Execute(null);
         }
+
+        private void Demo_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _menuViewModel.DemoCommand.Execute(null);
+        }
     }
 }
